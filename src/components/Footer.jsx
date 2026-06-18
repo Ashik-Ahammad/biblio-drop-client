@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -50,8 +49,8 @@ const Footer = () => {
 
   return (
     <footer className="relative bg-slate-950 text-white overflow-hidden">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-900/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/40 to-transparent" />
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-150 h-75 bg-emerald-900/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-8">
         <motion.div
@@ -128,10 +127,10 @@ const Footer = () => {
               <motion.button
                 type="submit"
                 whileTap={{ scale: 0.96 }}
-                className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${
+                className={`shrink-0 px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${
                   subscribed
                     ? "bg-emerald-700 text-emerald-200"
-                    : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-900/40"
+                    : "bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-900/40"
                 }`}
               >
                 {subscribed ? "✓ Joined" : "Subscribe"}
