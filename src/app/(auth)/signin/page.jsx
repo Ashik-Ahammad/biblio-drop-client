@@ -42,7 +42,7 @@ export default function SignInPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: "/role-check", 
       });
     } catch (error) {
       toast.error("Google login failed.");

@@ -26,39 +26,47 @@ export default function SignUpPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setPasswordError("");
-
-    const formData = new FormData(e.currentTarget);
-    const user = Object.fromEntries(formData.entries());
-
-    if (!validatePassword(user.password)) {
-      setPasswordError("Password must contain at least 8 chars, 1 uppercase, 1 lowercase, 1 number, and 1 special char.");
-      return;
-    }
-
-    if (user.password !== user.confirmPassword) {
-      setPasswordError("Passwords do not match.");
-      return;
-    }
-
-    delete user.confirmPassword;
 
     const toastId = toast.loading("Creating account...");
+
     try {
-      const { data, error } = await authClient.signUp.email({
-        ...user,
+      const formData = new FormData(e.currentTarget);
+      const user = Object.fromEntries(formData.entries());
+      const selectedRole = user.role;
+
+
+      const res = await authClient.signUp.email({
+        email: user.email,
+        password: user.password,
+        name: user.name,
       });
 
-      if (error) {
-        toast.error(error.message || "Signup failed", { id: toastId });
+      if (res.error) {
+        toast.dismiss(toastId);
+        toast.error(res.error.message);
         return;
       }
 
-      toast.success("Account created successfully!", { id: toastId });
+      const roleRes = await fetch(`${NEXT_PUBLIC_SERVER_URL}/api/users/update-role`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, role: selectedRole }),
+      });
 
-      window.location.href = "/";
+      if (roleRes.ok) {
+        toast.success("Account created successfully!", { id: toastId });
+
+        setTimeout(() => {
+          window.location.href = "/role-check";
+        }, 500);
+      } else {
+        toast.error("Account created but role failed.", { id: toastId });
+      }
+
     } catch (error) {
-      toast.error("Something went wrong. Please try again.", { id: toastId });
+      toast.dismiss(toastId);
+      toast.error("Something went wrong!");
+      console.error(error);
     }
   };
 
@@ -66,10 +74,10 @@ export default function SignUpPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: "/role-check",
       });
     } catch (error) {
-      toast.error("Google signup failed.");
+      toast.error("Google login failed.");
     }
   };
 
@@ -133,7 +141,7 @@ export default function SignUpPage() {
                 isRequired
                 name="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="john@email.com"
                 variant="bordered"
                 classNames={{
                   inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",

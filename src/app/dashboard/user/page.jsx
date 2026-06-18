@@ -8,4 +8,4 @@ UserPage
   );
 };
 
-export default UserP
+export default UserPage
