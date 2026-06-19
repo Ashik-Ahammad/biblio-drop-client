@@ -130,7 +130,7 @@ const Footer = () => {
               <motion.button
                 type="submit"
                 whileTap={{ scale: 0.98 }}
-                className={`w-full py-3.5 rounded-xl text-sm font-bold transition-all duration-300 ${
+                className={`w-full py-3.5 rounded-xl text-sm font-bold transition-all hover:cursor-pointer duration-300 ${
                   subscribed
                     ? "bg-emerald-900/50 text-emerald-400 border border-emerald-500/30"
                     : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 border border-transparent"
