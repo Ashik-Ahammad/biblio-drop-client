@@ -27,6 +27,8 @@ export default function CheckoutButton({ book, isAvailable, currentUser }) {
           deliveryFee: book.deliveryFee,
           coverImage: book.coverImage,
           user: currentUser,
+          author: book.author,
+          librarianEmail: book.librarianEmail
         }),
       });
 
