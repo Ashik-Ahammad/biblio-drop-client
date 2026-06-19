@@ -19,7 +19,7 @@ export default function BrowseBooks({ books = [] }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white"
+            className="text-4xl md:text-5xl font-bold tracking-tight mb-4 mt-3 text-white"
           >
             Explore Collection
           </motion.h1>

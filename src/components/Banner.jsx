@@ -109,7 +109,7 @@ const Banner = () => {
                 className="flex items-center gap-4"
               >
                 <Link
-                  href="/jobs"
+                  href="/books"
                   className="px-8 py-3.5 text-sm font-bold rounded-full bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-2xl shadow-emerald-900/50 border border-emerald-500/30 transition-all hover:scale-105 duration-300"
                 >
                   Explore Books
