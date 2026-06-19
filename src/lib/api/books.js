@@ -1,15 +1,36 @@
-"use server";
+import { serverFetch } from "@/lib/core/server";
 
-import { serverFetch } from "../core/server";
-
-export const getAllBooks = async () => {
-  return serverFetch("/api/books");
+export const getAllBooks = async (email = "", role = "") => {
+  try {
+    const data = await serverFetch(`/api/books?email=${email}&role=${role}`, {
+      cache: "no-store",
+    });
+    return data.success ? data.data : [];
+  } catch (error) {
+    return [];
+  }
 };
 
-export const getBookById = async (bookId) => {
-  return serverFetch(`/api/books/${bookId}`);
-};
-
+// Get featured books
 export const getFeaturedBooks = async () => {
-  return serverFetch("/api/books/featured");
+  try {
+    const data = await serverFetch(`/api/books/featured`, {
+      cache: "no-store",
+    });
+    return data.success ? data.data : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+// Get book by ID
+export const getBookById = async (id) => {
+  try {
+    const data = await serverFetch(`/api/books/${id}`, {
+      cache: "no-store",
+    });
+    return data;
+  } catch (error) {
+    return { success: false };
+  }
 };

@@ -22,7 +22,8 @@ import {
   ChevronLeft,
   ChevronRight,
   BookOpen,
-  LibraryBig
+  LibraryBig,
+  Heart
 } from "lucide-react";
 
 const dashboardItems = {
@@ -31,6 +32,7 @@ const dashboardItems = {
     { icon: History, label: "Delivery History", href: "/dashboard/user/history" },
     { icon: BookMarked, label: "My Reading List", href: "/dashboard/user/reading-list" },
     { icon: Star, label: "My Reviews", href: "/dashboard/user/reviews" },
+    { icon: Heart, label: "My Wishlists", href: "/dashboard/user/wishlist" },
   ],
   librarian: [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard/librarian" },
