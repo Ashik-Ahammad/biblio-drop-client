@@ -3,16 +3,19 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Form, Input, TextArea, Button, Select, ListBox } from "@heroui/react";
-import { BookPlus, ImagePlus, UploadCloud, FileText, ChevronDown } from "lucide-react";
+import { BookPlus, ImagePlus, UploadCloud, ChevronDown } from "lucide-react";
 import { imageUpload } from "@/lib/api/imgUpload";
 import { addBook } from "@/lib/actions/books";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 export default function AddBookPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
-  // 12 Popular Book Categories
+  const { data: session } = authClient.useSession();
+  const currentUser = session?.user;
+
   const categories = [
     { key: "Fiction", label: "Fiction" },
     { key: "Non-Fiction", label: "Non-Fiction" },
@@ -28,7 +31,6 @@ export default function AddBookPage() {
     { key: "Graphic-Novel", label: "Graphic Novels & Comics" },
   ];
 
-  // Image Preview Handler
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -38,7 +40,7 @@ export default function AddBookPage() {
     }
   };
 
-  // Form Submit Handler
+  // Form submit handler
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -47,12 +49,17 @@ export default function AddBookPage() {
     const toastId = toast.loading("Uploading book details...");
 
     try {
+
+      if (!currentUser) {
+        throw new Error("You must be logged in as a librarian to add books.");
+      }
+
       const formData = new FormData(formElement);
       const data = Object.fromEntries(formData.entries());
 
       const imageFile = formData.get("coverImage");
 
-      // Upload Image
+      // Upload image
       let imageUrl = "";
       if (imageFile && imageFile.size > 0) {
         imageUrl = await imageUpload(imageFile);
@@ -60,7 +67,7 @@ export default function AddBookPage() {
 
       if (!imageUrl) throw new Error("Please upload a valid cover image.");
 
-      // Prepare Final Data
+      // Final data
       const bookData = {
         title: data.title,
         author: data.author,
@@ -70,9 +77,12 @@ export default function AddBookPage() {
         coverImage: imageUrl,
         status: "Pending Approval",
         addedAt: new Date().toISOString(),
+
+        librarianId: currentUser.id,
+        librarianEmail: currentUser.email,
       };
 
-      // Send to Backend Action
+      //
       const res = await addBook(bookData);
 
       if (res.success) {
@@ -93,7 +103,6 @@ export default function AddBookPage() {
   return (
     <div className="w-full max-w-5xl mx-auto p-4 lg:p-8">
 
-      {/* Header Section */}
       <div className="mb-10 text-center lg:text-left relative z-10">
         <h1 className="text-3xl md:text-4xl font-black text-white flex items-center justify-center lg:justify-start gap-4 tracking-tight drop-shadow-md">
           <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
@@ -106,10 +115,8 @@ export default function AddBookPage() {
         </p>
       </div>
 
-      {/* Main Form Container - Premium Glassmorphism */}
       <div className="bg-[#0a0a0a]/80 backdrop-blur-3xl border border-white/5 rounded-[2rem] p-6 lg:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
 
-        {/* Abstract Glow Backgrounds */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-900/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -117,10 +124,8 @@ export default function AddBookPage() {
 
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 w-full">
 
-            {/* Left Column: Text Inputs (7 columns width) */}
             <div className="xl:col-span-7 flex flex-col gap-7 w-full">
 
-              {/* Title Input */}
               <div className="flex flex-col gap-2">
                 <label className="text-neutral-300 font-semibold text-sm">
                   Book Title <span className="text-emerald-500">*</span>
@@ -138,7 +143,6 @@ export default function AddBookPage() {
                 />
               </div>
 
-              {/* Author Input */}
               <div className="flex flex-col gap-2">
                 <label className="text-neutral-300 font-semibold text-sm">
                   Author Name <span className="text-emerald-500">*</span>
@@ -158,7 +162,6 @@ export default function AddBookPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 w-full items-start">
 
-                {/* Category Select */}
                 <div className="flex flex-col gap-2">
                   <label className="text-neutral-300 font-semibold text-sm">
                     Category <span className="text-emerald-500">*</span>
@@ -185,7 +188,6 @@ export default function AddBookPage() {
                   </Select>
                 </div>
 
-                {/* Delivery Fee Input */}
                 <div className="flex flex-col gap-2">
                   <label className="text-neutral-300 font-semibold text-sm">
                     Delivery Fee ($) <span className="text-emerald-500">*</span>
@@ -210,7 +212,6 @@ export default function AddBookPage() {
               </div>
             </div>
 
-            {/* Right Column: Image Upload (5 columns width) */}
             <div className="xl:col-span-5 flex flex-col gap-2 w-full h-full">
               <label className="text-sm font-semibold text-neutral-300">
                 Cover Image <span className="text-emerald-500">*</span>
@@ -250,7 +251,7 @@ export default function AddBookPage() {
                     </div>
                   ) : (
                     <div className="text-center p-6 flex flex-col items-center gap-4 transition-transform duration-300 group-hover:scale-105">
-                      <div className="w-16 h-16 rounded-full bg-white/[0.03] flex items-center justify-center text-neutral-400 border border-white/5 shadow-inner">
+                      <div className="w-16 h-16 rounded-full bg-white/3 flex items-center justify-center text-neutral-400 border border-white/5 shadow-inner">
                         <UploadCloud size={32} className="text-emerald-500/80 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                       </div>
                       <div>
@@ -264,7 +265,6 @@ export default function AddBookPage() {
             </div>
           </div>
 
-          {/* Bottom Area: TextArea & Submit */}
           <div className="flex flex-col gap-8 w-full pt-6 border-t border-white/5">
 
             <div className="flex flex-col gap-2">
