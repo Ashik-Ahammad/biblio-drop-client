@@ -7,6 +7,7 @@ import { ArrowLeft, Truck, Lock, ChevronRight } from "lucide-react";
 import { getBookById } from "@/lib/api/books";
 import { getBookReviews, checkReviewEligibility } from "@/lib/api/reviews";
 import { checkWishlistStatus } from "@/lib/api/wishlist";
+import { checkDuplicateOrder } from "@/lib/api/orders";
 import WishlistButton from "@/components/books/WishlistButton";
 import CheckoutButton from "@/components/CheckoutButton";
 import LibrarianControls from "@/components/books/LibrarianControls";
@@ -41,10 +42,14 @@ export default async function BookDetailsPage({ params }) {
     ? await checkReviewEligibility(currentUser.email, id)
     : false;
 
-  // Check if current user is a "user" role and has this book in their wishlist
   const isNormalUser = currentUser?.role === "user";
+
   const isWishlisted = isNormalUser
     ? await checkWishlistStatus(currentUser.email, id)
+    : false;
+
+  const hasAlreadyOrdered = isNormalUser
+    ? await checkDuplicateOrder(currentUser.email, id)
     : false;
 
   return (
@@ -139,6 +144,7 @@ export default async function BookDetailsPage({ params }) {
                   book={book}
                   isAvailable={isAvailable}
                   currentUser={currentUser}
+                  hasAlreadyOrdered={hasAlreadyOrdered}
                 />
 
                 {isNormalUser && (

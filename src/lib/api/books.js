@@ -53,3 +53,18 @@ export const getLibrarianBooks = async (email) => {
     return [];
   }
 };
+
+// Fetch pending books for Admin approval
+export const getPendingBooks = async () => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+    const res = await fetch(`${baseUrl}/api/books/pending`, {
+      cache: "no-store",
+    });
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error("Fetch Pending Books Error:", error);
+    return [];
+  }
+};

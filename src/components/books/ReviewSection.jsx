@@ -2,13 +2,14 @@
 
 import React, { useState } from "react";
 import { Button, TextArea } from "@heroui/react";
-import { Star, User } from "lucide-react";
+import { Star, User, MessageSquareQuote, Send } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { submitReview } from "@/lib/actions/reviews";
 
 export default function ReviewSection({ bookId, reviews, canReview, currentUser }) {
   const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function ReviewSection({ bookId, reviews, canReview, currentUser 
         toast.success("Review submitted!", { id: toastId });
         setComment("");
         setRating(5);
+        setHoverRating(0);
         router.refresh();
       } else throw new Error(data.message);
     } catch (error) {
@@ -42,64 +44,126 @@ export default function ReviewSection({ bookId, reviews, canReview, currentUser 
   };
 
   return (
-    <div className="mt-32 pt-20 border-t border-white/10">
-      <h2 className="text-3xl font-extrabold mb-8">Reader Reviews</h2>
+    <div className="mt-24 lg:mt-32 pt-16 border-t border-white/10 relative">
 
-      {canReview && (
-        <form onSubmit={handleSubmit} className="mb-12 bg-white/[0.02] border border-white/10 p-6 rounded-3xl">
-          <h4 className="text-xl font-bold mb-4">Write a Review</h4>
-          <div className="flex gap-2 mb-4">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                size={24}
-                className={`cursor-pointer transition-colors ${star <= rating ? "fill-amber-400 text-amber-400" : "text-neutral-600"}`}
-                onClick={() => setRating(star)}
-              />
-            ))}
-          </div>
-          <TextArea
-            placeholder="Share your thoughts about this book..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="mb-4"
-            classNames={{ inputWrapper: "bg-[#121212] border-white/10 hover:border-emerald-500/50" }}
-          />
-          <Button type="submit" isLoading={isSubmitting} className="bg-emerald-600 font-bold text-white px-8">
-            Submit Review
-          </Button>
-        </form>
-      )}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
 
-      {reviews.length === 0 ? (
-        <div className="bg-white/5 border border-white/5 rounded-3xl p-16 text-center flex flex-col items-center">
-          <Star className="text-neutral-500 mb-4" size={40} />
-          <h4 className="text-2xl font-bold mb-2">No reviews yet</h4>
-          <p className="text-neutral-400">Be the first to review after receiving delivery.</p>
+      <div className="relative z-10">
+        <div className="flex items-center gap-3 mb-10">
+          <MessageSquareQuote className="text-emerald-500" size={32} />
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
+            Reader Reviews
+          </h2>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {reviews.map((rev) => (
-            <div key={rev._id} className="bg-white/5 border border-white/5 p-6 rounded-2xl">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center"><User size={20}/></div>
-                  <div>
-                    <p className="font-bold text-white">{rev.userName}</p>
-                    <p className="text-xs text-neutral-500">{new Date(rev.createdAt).toLocaleDateString()}</p>
+
+        {canReview && (
+          <form
+            onSubmit={handleSubmit}
+            className="mb-16 relative bg-[#0a0a0a] border border-white/10 p-6 sm:p-8 rounded-3xl shadow-2xl overflow-hidden"
+          >
+
+            <div className="absolute top-[-50px] right-[-50px] w-[150px] h-[150px] bg-emerald-500/10 blur-[60px] rounded-full pointer-events-none" />
+
+            <h4 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              Share Your Thoughts
+            </h4>
+
+            <div className="flex items-center gap-2 mb-6 bg-black/40 w-fit p-3 rounded-2xl border border-white/5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  size={28}
+                  className={`cursor-pointer transition-all duration-300 hover:scale-110 ${
+                    star <= (hoverRating || rating)
+                      ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+                      : "text-neutral-700 hover:text-neutral-500"
+                  }`}
+                  onClick={() => setRating(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                />
+              ))}
+              <span className="ml-3 text-sm font-medium text-neutral-400">
+                {hoverRating || rating} out of 5
+              </span>
+            </div>
+
+           
+            <TextArea
+              placeholder="What did you like or dislike about this book?"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              minRows={4}
+              className="mb-6 w-full"
+              classNames={{
+                base: "w-full",
+                inputWrapper: "bg-black/50 border border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 focus-within:!bg-[#161616] focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all duration-300 rounded-2xl p-4",
+                input: "text-white text-base leading-relaxed placeholder:text-neutral-600 resize-none",
+              }}
+            />
+
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                isLoading={isSubmitting}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base h-12 px-8 rounded-xl w-full sm:w-auto transition-all duration-300 hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] flex items-center gap-2"
+              >
+                {!isSubmitting && <Send size={18} />}
+                Publish Review
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {reviews.length === 0 ? (
+          <div className="bg-[#0a0a0a] border border-dashed border-white/10 rounded-3xl p-16 text-center flex flex-col items-center justify-center">
+            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
+              <Star className="text-neutral-600" size={40} />
+            </div>
+            <h4 className="text-2xl font-bold text-white mb-3">No reviews yet</h4>
+            <p className="text-neutral-500 max-w-sm mx-auto text-lg">
+              Be the first to share your experience after receiving this book.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {reviews.map((rev) => (
+              <div
+                key={rev._id}
+                className="group bg-[#0a0a0a] border border-white/10 hover:border-white/20 p-6 lg:p-8 rounded-3xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-linear-to-br from-emerald-500/20 to-emerald-500/5 border border-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400">
+                      <User size={24} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-white text-lg group-hover:text-emerald-400 transition-colors">
+                        {rev.userName}
+                      </p>
+                      <p className="text-sm text-neutral-500 font-medium">
+                        {new Date(rev.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 bg-black/40 px-3 py-1.5 rounded-full border border-white/5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={14}
+                        className={i < rev.rating ? "fill-amber-400 text-amber-400" : "text-neutral-700"}
+                      />
+                    ))}
                   </div>
                 </div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={14} className={i < rev.rating ? "fill-amber-400 text-amber-400" : "text-neutral-600"} />
-                  ))}
-                </div>
+                <p className="text-neutral-300 text-base leading-relaxed">
+                  &quot;{rev.comment}&quot;
+                </p>
               </div>
-              <p className="text-neutral-300 text-sm leading-relaxed">{rev.comment}</p>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

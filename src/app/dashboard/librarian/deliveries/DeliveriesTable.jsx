@@ -37,7 +37,7 @@ export default function DeliveriesTable({ orders }) {
     <div className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-4 shadow-2xl">
       <Table className="dark text-white">
         <Table.ScrollContainer>
-          <Table.Content aria-label="Deliveries Table" className="min-w-[800px]">
+          <Table.Content aria-label="Deliveries Table" className="min-w-200">
             <Table.Header className="bg-white/5 border-b border-white/10">
               <Table.Column isRowHeader className="text-neutral-400 font-bold uppercase text-xs py-4">Client & Date</Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">Book Title</Table.Column>

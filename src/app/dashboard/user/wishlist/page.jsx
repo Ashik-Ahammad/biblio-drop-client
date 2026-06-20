@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import { getUserSession } from "@/lib/core/session";
 import { getUserWishlist } from "@/lib/api/wishlist";
 import { Table, Button } from "@heroui/react";
-import { Heart, HeartCrack, ShoppingCart } from "lucide-react";
+import { Heart, HeartCrack } from "lucide-react";
 import WishlistButton from "@/components/books/WishlistButton";
+import { FaBook } from "react-icons/fa";
 
 export const metadata = {
   title: "My Wishlist | BiblioDrop",
@@ -15,7 +16,6 @@ export const metadata = {
 export default async function WishlistPage() {
   const currentUser = await getUserSession();
 
-  // Strict Role Check: শুধুমাত্র "user" ছাড়া বাকি সবাইকে বের করে দেবে
   if (!currentUser || currentUser.role !== "user") {
     redirect("/dashboard");
   }
@@ -110,7 +110,7 @@ export default async function WishlistPage() {
                           <div className="flex items-center justify-end gap-3">
                             <Link href={`/books/${item.bookId}`}>
                               <Button size="sm" variant="flat" className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 font-bold">
-                                <ShoppingCart size={14} className="mr-1" /> View
+                                <FaBook  size={14} className="mr-1" /> View
                               </Button>
                             </Link>
 

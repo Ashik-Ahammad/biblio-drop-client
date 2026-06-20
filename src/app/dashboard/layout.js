@@ -1,14 +1,16 @@
-"use client";
-
 import React from "react";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
-import { Bell } from "lucide-react";
+import { getUserSession } from "@/lib/core/session";
 
-export default function DashboardLayout({ children }) {
+export default async function DashboardLayout({ children }) {
+
+  const currentUser = await getUserSession();
+
   return (
     <div className="flex h-screen bg-[#050505] overflow-hidden relative">
-      <div className="absolute top-0 left-1/4 w-125 h-125 bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-100 h-100 bg-emerald-900/10 blur-[100px] rounded-full pointer-events-none" />
+
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-emerald-900/10 blur-[100px] rounded-full pointer-events-none" />
 
       <DashboardSidebar />
 
@@ -19,10 +21,17 @@ export default function DashboardLayout({ children }) {
           </h1>
 
           <div className="flex items-center gap-4">
-            
-            <span className="hidden sm:block text-sm font-medium text-neutral-400 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-              Welcome back
-            </span>
+
+            {currentUser && (
+              <div className="hidden sm:flex items-center">
+                <span className="text-sm font-medium text-neutral-300 bg-white/5 px-4 py-1.5 rounded-l-full border border-white/10 border-r-0">
+                  {currentUser.email}
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-r-full border border-emerald-500/20 flex items-center">
+                  {currentUser.role}
+                </span>
+              </div>
+            )}
           </div>
         </header>
 

@@ -33,15 +33,19 @@ export default function ReviewListClient({ reviews }) {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    if (!editRating || !editComment) return toast.error("Please provide both rating and comment");
+    if (!editRating || !editComment)
+      return toast.error("Please provide both rating and comment");
 
     setIsEditing(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews/${selectedReview._id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating: editRating, comment: editComment }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews/${selectedReview._id}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rating: editRating, comment: editComment }),
+        },
+      );
       const data = await res.json();
 
       if (data.success) {
@@ -60,9 +64,12 @@ export default function ReviewListClient({ reviews }) {
   const handleDeleteConfirm = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews/${selectedReview._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews/${selectedReview._id}`,
+        {
+          method: "DELETE",
+        },
+      );
       const data = await res.json();
 
       if (data.success) {
@@ -82,9 +89,14 @@ export default function ReviewListClient({ reviews }) {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 relative z-10">
         {reviews.map((review) => {
-          const reviewDate = new Date(review.createdAt).toLocaleDateString("en-US", {
-            month: "short", day: "numeric", year: "numeric",
-          });
+          const reviewDate = new Date(review.createdAt).toLocaleDateString(
+            "en-US",
+            {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            },
+          );
 
           return (
             <Card
@@ -105,7 +117,10 @@ export default function ReviewListClient({ reviews }) {
                   size="sm"
                   variant="secondary"
                   className="bg-red-500/10 text-red-400 hover:bg-red-500/20 w-8 h-8 p-0 min-w-0"
-                  onPress={() => { setSelectedReview(review); setIsDeleteOpen(true); }}
+                  onPress={() => {
+                    setSelectedReview(review);
+                    setIsDeleteOpen(true);
+                  }}
                 >
                   <Trash2 size={14} />
                 </Button>
@@ -115,7 +130,12 @@ export default function ReviewListClient({ reviews }) {
               <div className="flex items-center gap-4 mb-5 pb-5 border-b border-white/5 pr-16">
                 {review.bookImage ? (
                   <div className="relative w-12 h-16 rounded-md overflow-hidden bg-neutral-900 shrink-0">
-                    <Image src={review.bookImage} alt={review.bookTitle} fill className="object-cover" />
+                    <Image
+                      src={review.bookImage}
+                      alt={review.bookTitle}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 ) : (
                   <div className="w-12 h-16 rounded-md bg-white/5 flex items-center justify-center shrink-0">
@@ -123,7 +143,10 @@ export default function ReviewListClient({ reviews }) {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <Link href={`/books/${review.bookId}`} className="font-bold text-white text-base hover:text-emerald-400 transition-colors line-clamp-1 block">
+                  <Link
+                    href={`/books/${review.bookId}`}
+                    className="font-bold text-white text-base hover:text-emerald-400 transition-colors line-clamp-1 block"
+                  >
                     {review.bookTitle}
                   </Link>
                   <p className="text-xs text-neutral-500 mt-1">{reviewDate}</p>
@@ -137,7 +160,11 @@ export default function ReviewListClient({ reviews }) {
                     <Star
                       key={star}
                       size={16}
-                      className={star <= review.rating ? "fill-amber-400 text-amber-400" : "text-neutral-700"}
+                      className={
+                        star <= review.rating
+                          ? "fill-amber-400 text-amber-400"
+                          : "text-neutral-700"
+                      }
                     />
                   ))}
                 </div>
@@ -157,12 +184,20 @@ export default function ReviewListClient({ reviews }) {
             <Modal.Dialog className="sm:max-w-md bg-[#0a0a0a] border border-white/10 text-white">
               <Modal.CloseTrigger className="text-neutral-400 hover:text-white" />
               <Modal.Header>
-                <Modal.Heading className="text-xl font-bold">Edit Review</Modal.Heading>
+                <Modal.Heading className="text-xl text-white font-bold">
+                  Edit Review
+                </Modal.Heading>
               </Modal.Header>
               <Modal.Body className="p-6">
-                <form id="edit-review-form" onSubmit={handleEditSubmit} className="flex flex-col gap-5">
+                <form
+                  id="edit-review-form"
+                  onSubmit={handleEditSubmit}
+                  className="flex flex-col gap-5"
+                >
                   <div>
-                    <label className="text-sm font-medium text-neutral-300 block mb-2">Rating</label>
+                    <label className="text-sm font-medium text-neutral-300 block mb-2">
+                      Rating
+                    </label>
                     <div className="flex items-center gap-2">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
@@ -171,13 +206,22 @@ export default function ReviewListClient({ reviews }) {
                           onClick={() => setEditRating(star)}
                           className="focus:outline-none transition-transform hover:scale-110"
                         >
-                          <Star size={24} className={star <= editRating ? "fill-amber-400 text-amber-400" : "text-neutral-700"} />
+                          <Star
+                            size={24}
+                            className={
+                              star <= editRating
+                                ? "fill-amber-400 text-amber-400"
+                                : "text-neutral-700"
+                            }
+                          />
                         </button>
                       ))}
                     </div>
                   </div>
                   <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-sm font-medium text-neutral-300">Your Comment</label>
+                    <label className="text-sm font-medium text-neutral-300">
+                      Your Comment
+                    </label>
                     <textarea
                       value={editComment}
                       onChange={(e) => setEditComment(e.target.value)}
@@ -189,10 +233,19 @@ export default function ReviewListClient({ reviews }) {
                 </form>
               </Modal.Body>
               <Modal.Footer className="border-t border-white/5">
-                <Button variant="secondary" onPress={() => setIsEditOpen(false)} className="bg-white/10 text-white hover:bg-white/20">
+                <Button
+                  variant="secondary"
+                  onPress={() => setIsEditOpen(false)}
+                  className="bg-white/10 text-white hover:bg-white/20"
+                >
                   Cancel
                 </Button>
-                <Button form="edit-review-form" type="submit" isLoading={isEditing} className="bg-emerald-600 text-white hover:bg-emerald-700">
+                <Button
+                  form="edit-review-form"
+                  type="submit"
+                  isLoading={isEditing}
+                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                >
                   Save Changes
                 </Button>
               </Modal.Footer>
@@ -213,14 +266,26 @@ export default function ReviewListClient({ reviews }) {
               </Modal.Header>
               <Modal.Body className="p-6">
                 <p className="text-neutral-300">
-                  Are you sure you want to delete your review for <span className="font-bold text-white">{selectedReview?.bookTitle}</span>? This action cannot be undone.
+                  Are you sure you want to delete your review for{" "}
+                  <span className="font-bold text-white">
+                    {selectedReview?.bookTitle}
+                  </span>
+                  ? This action cannot be undone.
                 </p>
               </Modal.Body>
               <Modal.Footer className="border-t border-white/5">
-                <Button variant="secondary" onPress={() => setIsDeleteOpen(false)} className="bg-white/10 text-white hover:bg-white/20">
+                <Button
+                  variant="secondary"
+                  onPress={() => setIsDeleteOpen(false)}
+                  className="bg-white/10 text-white hover:bg-white/20"
+                >
                   Cancel
                 </Button>
-                <Button onPress={handleDeleteConfirm} isLoading={isDeleting} className="bg-red-600 text-white hover:bg-red-700">
+                <Button
+                  onPress={handleDeleteConfirm}
+                  isLoading={isDeleting}
+                  className="bg-red-600 text-white hover:bg-red-700"
+                >
                   Delete Review
                 </Button>
               </Modal.Footer>

@@ -42,7 +42,7 @@ const dashboardItems = {
   ],
   admin: [
     { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard/admin" },
-    { icon: ClipboardCheck, label: "Approval Queue", href: "/dashboard/admin/approvals" },
+    { icon: ClipboardCheck, label: "Approval Queue", href: "/dashboard/admin/book-approvals" },
     { icon: Users, label: "Manage Users", href: "/dashboard/admin/manage-users" },
     { icon: LibraryBig, label: "Manage All Books", href: "/dashboard/admin/manage-all-books" },
     { icon: ReceiptText, label: "All Transactions", href: "/dashboard/admin/transactions" },
