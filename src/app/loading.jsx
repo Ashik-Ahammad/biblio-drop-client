@@ -1,47 +1,74 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import React from "react";
 
 export default function Loading() {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#050505] relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none" />
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-zinc-50 dark:bg-[#050505] relative overflow-hidden">
 
-      <div className="relative z-10 flex flex-col items-center gap-8">
-        <div className="relative flex items-center justify-center w-32 h-32">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-full border-y-[3px] border-x-[3px] border-emerald-500/10 border-t-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-          />
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none hidden dark:block" />
 
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-3 rounded-full border-y-[3px] border-x-[3px] border-emerald-900/20 border-b-emerald-400"
-          />
+      <div className="relative z-10 flex flex-col items-center gap-12">
+        {/* Pure CSS Loader */}
+        <span className="loader"></span>
 
-          <motion.div
-            animate={{ scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative w-16 h-16 bg-linear-to-br from-emerald-500/20 to-transparent border border-emerald-500/30 rounded-2xl flex items-center justify-center shadow-[inset_0_0_25px_rgba(16,185,129,0.2)] backdrop-blur-xl"
-          >
-            <BookOpen className="text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.6)]" size={30} strokeWidth={2.5} />
-          </motion.div>
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
-          <motion.h2
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="text-2xl md:text-3xl font-black text-white tracking-tight"
-          >
-            Biblio<span className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">Drop</span>
-          </motion.h2>
-
-        </div>
+        {/* Brand Text */}
+        <h2 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white tracking-tight animate-pulse">
+          Biblio<span className="text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]">Drop</span>
+        </h2>
       </div>
+
+      {/* Injecting the custom CSS animations directly into the component */}
+      <style>{`
+        .loader {
+          width: 48px;
+          height: 48px;
+          display: inline-block;
+          position: relative;
+          transform: rotate(45deg);
+        }
+        .loader::before {
+          content: '';
+          box-sizing: border-box;
+          width: 24px;
+          height: 24px;
+          position: absolute;
+          left: 0;
+          top: -24px;
+          animation: animloader 4s ease infinite;
+        }
+        .loader::after {
+          content: '';
+          box-sizing: border-box;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 24px;
+          height: 24px;
+          background: rgba(16, 185, 129, 0.85); /* Emerald 500 */
+          box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+          animation: animloader2 2s ease infinite;
+        }
+
+        @keyframes animloader {
+          0% { box-shadow: 0 24px rgba(16, 185, 129, 0), 24px 24px rgba(16, 185, 129, 0), 24px 48px rgba(16, 185, 129, 0), 0px 48px rgba(16, 185, 129, 0); }
+          12% { box-shadow: 0 24px #10b981, 24px 24px rgba(16, 185, 129, 0), 24px 48px rgba(16, 185, 129, 0), 0px 48px rgba(16, 185, 129, 0); }
+          25% { box-shadow: 0 24px #10b981, 24px 24px #10b981, 24px 48px rgba(16, 185, 129, 0), 0px 48px rgba(16, 185, 129, 0); }
+          37% { box-shadow: 0 24px #10b981, 24px 24px #10b981, 24px 48px #10b981, 0px 48px rgba(16, 185, 129, 0); }
+          50% { box-shadow: 0 24px #10b981, 24px 24px #10b981, 24px 48px #10b981, 0px 48px #10b981; }
+          62% { box-shadow: 0 24px rgba(16, 185, 129, 0), 24px 24px #10b981, 24px 48px #10b981, 0px 48px #10b981; }
+          75% { box-shadow: 0 24px rgba(16, 185, 129, 0), 24px 24px rgba(16, 185, 129, 0), 24px 48px #10b981, 0px 48px #10b981; }
+          87% { box-shadow: 0 24px rgba(16, 185, 129, 0), 24px 24px rgba(16, 185, 129, 0), 24px 48px rgba(16, 185, 129, 0), 0px 48px #10b981; }
+          100% { box-shadow: 0 24px rgba(16, 185, 129, 0), 24px 24px rgba(16, 185, 129, 0), 24px 48px rgba(16, 185, 129, 0), 0px 48px rgba(16, 185, 129, 0); }
+        }
+
+        @keyframes animloader2 {
+          0% { transform: translate(0, 0) rotateX(0) rotateY(0); }
+          25% { transform: translate(100%, 0) rotateX(0) rotateY(180deg); }
+          50% { transform: translate(100%, 100%) rotateX(-180deg) rotateY(180deg); }
+          75% { transform: translate(0, 100%) rotateX(-180deg) rotateY(360deg); }
+          100% { transform: translate(0, 0) rotateX(0) rotateY(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

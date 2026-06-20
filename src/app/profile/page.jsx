@@ -94,7 +94,6 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-[#050505] pt-28 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 relative overflow-hidden">
 
-      {/* Decorative Glow */}
       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none hidden dark:block" />
 
       <div className="max-w-4xl mx-auto relative z-10">
