@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { BookOpen, Home, LayoutDashboard, LogOut, Menu, User, X, Library } from "lucide-react";
+import { ModeToggle } from "@/components/ModeToggle"; // ModeToggle ইম্পোর্ট করা হলো
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,6 +43,7 @@ const Navbar = () => {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
+          {/* Left Side: Mobile Menu & Logo */}
           <div className="flex items-center gap-4">
             <button
               className="md:hidden text-gray-300 hover:text-emerald-400 transition-colors focus:outline-none"
@@ -60,6 +62,7 @@ const Navbar = () => {
             </Link>
           </div>
 
+          {/* Center: Desktop Navigation Links */}
           <ul className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => {
               const isActive = pathName === link.path;
@@ -79,69 +82,77 @@ const Navbar = () => {
             })}
           </ul>
 
-          <div className="hidden md:flex items-center gap-4">
-            {!user ? (
-              <>
-                <Link href="/signin" className="font-medium text-gray-300 hover:text-emerald-400 transition-colors px-4">
-                  Sign In
-                </Link>
-                <Link href="/signup">
-                  <Button className="bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-900/20 hover:bg-emerald-500 transition-all rounded-full px-8 py-2 border-none">
-                    Get Started
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <Dropdown>
-                <Dropdown.Trigger className="cursor-pointer rounded-full transition-transform hover:scale-105">
-                  <Avatar size="sm" isBordered className="ring-2 ring-offset-2 ring-offset-[#0a0a0a] ring-emerald-500/50">
-                    <Avatar.Image src={user.image} alt={user.name} />
-                    <Avatar.Fallback delayMs={600} className="bg-emerald-900/50 text-emerald-500 font-bold">{initials}</Avatar.Fallback>
-                  </Avatar>
-                </Dropdown.Trigger>
 
-                <Dropdown.Popover className="bg-[#121212] border border-white/10 text-white shadow-2xl rounded-2xl min-w-[240px]">
-                  <div className="px-4 pt-4 pb-2 border-b border-white/5">
-                    <div className="flex items-center gap-3">
-                      <Avatar size="sm">
-                        <Avatar.Image src={user.image} alt={user.name} />
-                        <Avatar.Fallback delayMs={600} className="bg-emerald-900/50 text-emerald-500 font-bold">{initials}</Avatar.Fallback>
-                      </Avatar>
-                      <div className="flex flex-col gap-0">
-                        <p className="text-sm leading-5 font-semibold text-white">{user.name}</p>
-                        <p className="text-xs leading-none text-neutral-400 truncate w-40">{user.email}</p>
-                        <span className="mt-1.5 w-fit rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-500 uppercase tracking-wider border border-emerald-500/20">
-                          {user.role || "USER"}
-                        </span>
+          <div className="flex items-center gap-3 md:gap-4">
+
+            {/* ModeToggle */}
+            <ModeToggle />
+
+           
+            <div className="hidden md:flex items-center gap-4">
+              {!user ? (
+                <>
+                  <Link href="/signin" className="font-medium text-gray-300 hover:text-emerald-400 transition-colors px-4">
+                    Sign In
+                  </Link>
+                  <Link href="/signup">
+                    <Button className="bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-900/20 hover:bg-emerald-500 transition-all rounded-full px-8 py-2 border-none">
+                      Get Started
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <Dropdown>
+                  <Dropdown.Trigger className="cursor-pointer rounded-full transition-transform hover:scale-105">
+                    <Avatar size="sm" isBordered className="ring-2 ring-offset-2 ring-offset-[#0a0a0a] ring-emerald-500/50">
+                      <Avatar.Image src={user.image} alt={user.name} />
+                      <Avatar.Fallback delayMs={600} className="bg-emerald-900/50 text-emerald-500 font-bold">{initials}</Avatar.Fallback>
+                    </Avatar>
+                  </Dropdown.Trigger>
+
+                  <Dropdown.Popover className="bg-[#121212] border border-white/10 text-white shadow-2xl rounded-2xl min-w-[240px]">
+                    <div className="px-4 pt-4 pb-2 border-b border-white/5">
+                      <div className="flex items-center gap-3">
+                        <Avatar size="sm">
+                          <Avatar.Image src={user.image} alt={user.name} />
+                          <Avatar.Fallback delayMs={600} className="bg-emerald-900/50 text-emerald-500 font-bold">{initials}</Avatar.Fallback>
+                        </Avatar>
+                        <div className="flex flex-col gap-0">
+                          <p className="text-sm leading-5 font-semibold text-white">{user.name}</p>
+                          <p className="text-xs leading-none text-neutral-400 truncate w-40">{user.email}</p>
+                          <span className="mt-1.5 w-fit rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-500 uppercase tracking-wider border border-emerald-500/20">
+                            {user.role || "USER"}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <Dropdown.Menu className="p-2">
-                    <Dropdown.Item id="dashboard" textValue="Dashboard" href={`/dashboard/${user.role || 'user'}`} className="hover:bg-emerald-500/10 rounded-xl transition-colors">
-                      <div className="flex w-full items-center justify-between gap-2 py-1">
-                        <Label className="cursor-pointer text-sm font-medium text-neutral-300">Dashboard</Label>
-                        <LayoutDashboard className="size-4 text-emerald-500" />
-                      </div>
-                    </Dropdown.Item>
+                    <Dropdown.Menu className="p-2">
+                      <Dropdown.Item id="dashboard" textValue="Dashboard" href={`/dashboard/${user.role || 'user'}`} className="hover:bg-emerald-500/10 rounded-xl transition-colors">
+                        <div className="flex w-full items-center justify-between gap-2 py-1">
+                          <Label className="cursor-pointer text-sm font-medium text-neutral-300">Dashboard</Label>
+                          <LayoutDashboard className="size-4 text-emerald-500" />
+                        </div>
+                      </Dropdown.Item>
 
-                    <Dropdown.Item id="profile" textValue="Profile" href="/profile" className="hover:bg-emerald-500/10 rounded-xl transition-colors">
-                      <div className="flex w-full items-center justify-between gap-2 py-1">
-                        <Label className="cursor-pointer text-sm font-medium text-neutral-300">Profile</Label>
-                        <User className="size-4 text-emerald-500" />
-                      </div>
-                    </Dropdown.Item>
+                      <Dropdown.Item id="profile" textValue="Profile" href="/profile" className="hover:bg-emerald-500/10 rounded-xl transition-colors">
+                        <div className="flex w-full items-center justify-between gap-2 py-1">
+                          <Label className="cursor-pointer text-sm font-medium text-neutral-300">Profile</Label>
+                          <User className="size-4 text-emerald-500" />
+                        </div>
+                      </Dropdown.Item>
 
-                    <Dropdown.Item id="logout" textValue="Logout" variant="danger" onClick={handleSignOut} className="mt-1 hover:bg-red-500/10 rounded-xl transition-colors">
-                      <div className="flex w-full items-center justify-between gap-2 py-1">
-                        <Label className="cursor-pointer text-sm font-medium text-red-400">Sign Out</Label>
-                        <LogOut className="size-4 text-red-400" />
-                      </div>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown.Popover>
-              </Dropdown>
-            )}
+                      <Dropdown.Item id="logout" textValue="Logout" variant="danger" onClick={handleSignOut} className="mt-1 hover:bg-red-500/10 rounded-xl transition-colors">
+                        <div className="flex w-full items-center justify-between gap-2 py-1">
+                          <Label className="cursor-pointer text-sm font-medium text-red-400">Sign Out</Label>
+                          <LogOut className="size-4 text-red-400" />
+                        </div>
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown.Popover>
+                </Dropdown>
+              )}
+            </div>
           </div>
         </div>
       </motion.nav>
@@ -153,7 +164,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-[70px] left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 md:hidden"
+            className="fixed top-17.5 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10 md:hidden"
           >
             <div className="px-4 py-6 flex flex-col gap-4">
               {navLinks.map((link) => {

@@ -150,7 +150,7 @@ export default function EditBookModal({ book }) {
                 {/* Custom Input Group: Description */}
                 <div className="flex flex-col gap-2 group">
                   <label className="text-xs font-bold uppercase tracking-wider text-neutral-400 group-focus-within:text-emerald-400 transition-colors">
-                    Description / Synopsis
+                    Description 
                   </label>
                   <textarea
                     name="description"

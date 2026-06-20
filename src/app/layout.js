@@ -5,10 +5,9 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
-
+import { ThemeProvider } from "@/components/theme-provider";
 
 const outfit = Outfit({
-  variable: "--font-outfit",
   subsets: ["latin"],
 });
 
@@ -20,12 +19,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${outfit.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
-        <ConditionalNavbar></ConditionalNavbar>
-        <main className="flex-1">{children}</main>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
 
-        <Toaster position="bottom-right" reverseOrder={false} />
+      <body className={`${outfit.className} min-h-full flex flex-col bg-zinc-50 dark:bg-zinc-950`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ConditionalNavbar></ConditionalNavbar>
+          <main className="flex-1">{children}</main>
+          <Toaster position="bottom-right" reverseOrder={false} />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -41,7 +41,7 @@ export default function BookDetailsLoading() {
             <div className="h-12 md:h-14 w-3/4 bg-white/20 animate-pulse rounded-xl mb-4" />
             <div className="h-6 w-1/3 bg-white/10 animate-pulse rounded-md mb-10" />
 
-            {/* Synopsis Skeleton */}
+            {/* Description  Skeleton */}
             <div className="mb-12">
               <div className="h-4 w-24 bg-white/10 animate-pulse rounded-md mb-6" />
               <div className="space-y-3">

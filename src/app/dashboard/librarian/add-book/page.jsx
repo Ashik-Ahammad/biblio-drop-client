@@ -269,7 +269,7 @@ export default function AddBookPage() {
 
             <div className="flex flex-col gap-2">
               <label className="text-neutral-300 font-semibold text-sm">
-                Synopsis / Description <span className="text-emerald-500">*</span>
+                 Description <span className="text-emerald-500">*</span>
               </label>
               <TextArea
                 isRequired

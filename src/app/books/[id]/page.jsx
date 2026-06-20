@@ -116,7 +116,7 @@ export default async function BookDetailsPage({ params }) {
 
             <div className="mb-12">
               <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-widest mb-4">
-                Synopsis
+                Description 
               </h3>
               <p className="text-neutral-300 leading-relaxed text-lg font-light">
                 {book.description}
