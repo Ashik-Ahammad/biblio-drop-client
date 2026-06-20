@@ -90,13 +90,16 @@ export default function InventoryTable({ books }) {
     <div className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-4 shadow-2xl">
       <Table className="dark text-white">
         <Table.ScrollContainer>
-          <Table.Content aria-label="Inventory Table" className="min-w-[800px]">
+          <Table.Content aria-label="Inventory Table" className="min-w-200">
             <Table.Header className="bg-white/5 border-b border-white/10">
               <Table.Column isRowHeader className="text-neutral-400 font-bold uppercase text-xs py-4">
                 Book
               </Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">
                 Category
+              </Table.Column>
+              <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">
+                Fee
               </Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">
                 Status
@@ -111,7 +114,7 @@ export default function InventoryTable({ books }) {
               emptyContent={<span className="text-neutral-500 py-10 block text-center">No books found in inventory.</span>}
             >
               {(book) => (
-                <Table.Row key={book.id} className="hover:bg-white/[0.02] border-b border-white/5">
+                <Table.Row key={book.id} className="hover:bg-white/2 border-b border-white/5">
                   <Table.Cell className="py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-14 relative rounded overflow-hidden bg-neutral-900 border border-white/10 shrink-0">
@@ -122,19 +125,27 @@ export default function InventoryTable({ books }) {
                           className="object-cover"
                         />
                       </div>
-                      <div className="font-bold text-white max-w-[200px] truncate">
+                      <div className="font-bold text-white max-w-50 truncate">
                         {book?.title || "Untitled"}
                       </div>
                     </div>
                   </Table.Cell>
+
                   <Table.Cell className="text-neutral-400 py-3">
                     {book?.category || "Uncategorized"}
                   </Table.Cell>
+
+                  {/* Added Delivery Fee Cell */}
+                  <Table.Cell className="text-neutral-300 font-bold py-3">
+                    ${Number(book?.deliveryFee || 0).toFixed(2)}
+                  </Table.Cell>
+
                   <Table.Cell className="py-3">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(book?.status)}`}>
                       {book?.status || "Unknown"}
                     </span>
                   </Table.Cell>
+
                   <Table.Cell className="py-3">
                     <div className="flex justify-end items-center gap-2">
                       <Button

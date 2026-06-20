@@ -41,6 +41,7 @@ export default function DeliveriesTable({ orders }) {
             <Table.Header className="bg-white/5 border-b border-white/10">
               <Table.Column isRowHeader className="text-neutral-400 font-bold uppercase text-xs py-4">Client & Date</Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">Book Title</Table.Column>
+              <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">Fee</Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">Status</Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs text-right py-4">Update Status</Table.Column>
             </Table.Header>
@@ -52,19 +53,26 @@ export default function DeliveriesTable({ orders }) {
               {(order) => {
                 const orderDate = order.orderedAt ? new Date(order.orderedAt).toLocaleDateString() : "Unknown Date";
                 return (
-                  <Table.Row key={order.id} className="hover:bg-white/2 border-b border-white/5">
+                  <Table.Row key={order.id} className="hover:bg-white/5 border-b border-white/5 transition-colors">
                     <Table.Cell className="py-4">
                       <p className="font-bold text-white">{order.user?.name || "Unknown User"}</p>
                       <p className="text-xs text-neutral-500 mt-0.5">{orderDate}</p>
                     </Table.Cell>
+
                     <Table.Cell className="text-neutral-300 font-medium py-4">
                       {order.book?.title || "Unknown Book"}
                     </Table.Cell>
+
+                    <Table.Cell className="font-bold text-white py-4">
+                      ${Number(order.book?.deliveryFee || 0).toFixed(2)}
+                    </Table.Cell>
+
                     <Table.Cell className="py-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusBadge(order.status)}`}>
                         {order.status}
                       </span>
                     </Table.Cell>
+
                     <Table.Cell className="py-4">
                       <div className="flex justify-end gap-2">
                         {order.status === "Pending Delivery" && (

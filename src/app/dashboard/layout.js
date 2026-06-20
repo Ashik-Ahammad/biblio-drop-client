@@ -1,6 +1,7 @@
 import React from "react";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { getUserSession } from "@/lib/core/session";
+import { LayoutDashboard } from "lucide-react";
 
 export default async function DashboardLayout({ children }) {
 
@@ -15,9 +16,10 @@ export default async function DashboardLayout({ children }) {
       <DashboardSidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
+
         <header className="h-16 lg:h-20 border-b border-white/10 bg-[#0a0a0a]/60 backdrop-blur-2xl flex items-center justify-between px-6 lg:px-10 sticky top-0 z-30 transition-all duration-300">
-          <h1 className="font-bold text-lg md:text-xl text-white tracking-wide">
-            Dashboard
+          <h1 className="font-bold text-lg md:text-xl text-white tracking-wide flex items-center gap-2 hover:text-green-400">
+            <LayoutDashboard size={24} /> <span className="uppercase"> Dashboard</span>
           </h1>
 
           <div className="flex items-center gap-4">
@@ -27,7 +29,7 @@ export default async function DashboardLayout({ children }) {
                 <span className="text-sm font-medium text-neutral-300 bg-white/5 px-4 py-1.5 rounded-l-full border border-white/10 border-r-0">
                   {currentUser.email}
                 </span>
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-r-full border border-emerald-500/20 flex items-center">
+                <span className="text-sm font-medium text-blue-500 bg-white/5 px-4 py-1.5 rounded-r-full border uppercase select-none border-white/10 border-r-0">
                   {currentUser.role}
                 </span>
               </div>
