@@ -5,9 +5,8 @@ import Footer from "@/components/Footer";
 import { getFeaturedBooks } from "@/lib/api/books";
 
 export default async function Home() {
-
-  const res = await getFeaturedBooks();
-  const books = res?.success ? res.data : [];
+  
+  const books = await getFeaturedBooks();
 
   return (
     <div>

@@ -1,36 +1,55 @@
-import { serverFetch } from "@/lib/core/server";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const getAllBooks = async (email = "", role = "") => {
   try {
-    const data = await serverFetch(`/api/books?email=${email}&role=${role}`, {
+    const res = await fetch(`${BASE_URL}/api/books?email=${email}&role=${role}`, {
       cache: "no-store",
     });
+    const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
+    console.error("Fetch All Books Error:", error);
     return [];
   }
 };
 
-// Get featured books
 export const getFeaturedBooks = async () => {
   try {
-    const data = await serverFetch(`/api/books/featured`, {
+    const res = await fetch(`${BASE_URL}/api/books/featured`, {
       cache: "no-store",
     });
+    const data = await res.json();
     return data.success ? data.data : [];
   } catch (error) {
+    console.error("Fetch Featured Books Error:", error);
     return [];
   }
 };
 
-// Get book by ID
 export const getBookById = async (id) => {
   try {
-    const data = await serverFetch(`/api/books/${id}`, {
+    const res = await fetch(`${BASE_URL}/api/books/${id}`, {
       cache: "no-store",
     });
+    const data = await res.json();
     return data;
   } catch (error) {
+    console.error(`Fetch Book By ID (${id}) Error:`, error);
     return { success: false };
+  }
+};
+
+export const getLibrarianBooks = async (email) => {
+  if (!email) return [];
+  try {
+    const res = await fetch(`${BASE_URL}/api/books/librarian/${email}`, {
+      cache: "no-store",
+    });
+    const data = await res.json();
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error("Fetch Librarian Books Error:", error);
+    return [];
   }
 };
