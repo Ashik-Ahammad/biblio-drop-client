@@ -1,40 +1,88 @@
 "use client";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth-client";
-import { Button, Input, Form } from "@heroui/react";
-import { Eye, EyeOff, Mail, Lock, LogIn } from "lucide-react";
+import { Button, Form } from "@heroui/react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  BookOpen,
+  AlertCircle,
+} from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import Lottie from "lottie-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import signinAnimation from "../../../../public/assets/signin.json";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const Field = React.forwardRef(function Field(
+  { endButton, error, className = "", ...props },
+  ref
+) {
+  return (
+    <div className="w-full">
+      <div className="relative w-full">
+        <input
+          ref={ref}
+          {...props}
+          className={`w-full h-12 rounded-xl bg-white/5 border text-white placeholder-neutral-500 caret-emerald-500 outline-none transition-colors px-4 ${
+            error
+              ? "border-red-500/60 focus:border-red-500"
+              : "border-white/10 focus:border-emerald-500"
+          } ${endButton ? "pr-11" : "pr-4"} ${className}`}
+        />
+        {endButton}
+      </div>
+      {error && (
+        <p className="flex items-center gap-1.5 text-red-400 text-xs mt-1.5 ml-1">
+          <AlertCircle size={12} /> {error}
+        </p>
+      )}
+    </div>
+  );
+});
+
 export default function SignInPage() {
   const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
+  const router = useRouter();
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const user = Object.fromEntries(formData.entries());
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: { email: "", password: "" },
+  });
 
+  const toggleVisibility = () => setIsVisible((v) => !v);
+
+  const onSubmit = async (data) => {
     const toastId = toast.loading("Signing in...");
+
     try {
-      const { data, error } = await authClient.signIn.email({
-        ...user,
-        callbackURL: "/",
-      });
+      const { error } = await authClient.signIn.email({ ...data });
 
       if (error) {
-        toast.error(error.message || "Invalid email or password", { id: toastId });
+        toast.error(error.message || "Invalid email or password", {
+          id: toastId,
+        });
         return;
       }
 
       toast.success("Welcome back!", { id: toastId });
-
+      router.refresh();
+      router.push("/role-check");
     } catch (error) {
-      toast.error("Something went wrong. Please try again.", { id: toastId });
+      toast.error("Something went wrong. Please try again.", {
+        id: toastId,
+      });
     }
   };
 
@@ -42,7 +90,7 @@ export default function SignInPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/role-check", 
+        callbackURL: "/role-check",
       });
     } catch (error) {
       toast.error("Google login failed.");
@@ -57,14 +105,20 @@ export default function SignInPage() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-5xl bg-white/3 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col lg:flex-row"
       >
-
-        <div className="lg:w-1/2 p-8 flex items-center justify-center bg-black/20">
+        <div className="lg:w-1/2 p-8 hidden sm:flex items-center justify-center bg-black/20">
           <div className="w-full max-w-sm">
             <Lottie animationData={signinAnimation} loop={true} />
           </div>
         </div>
 
-        <div className="lg:w-1/2 p-8 lg:p-14 flex flex-col justify-center">
+        <div className="w-full lg:w-1/2 p-6 sm:p-8 lg:p-14 flex flex-col justify-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-neutral-400 hover:text-emerald-500 transition-colors w-fit mb-8 text-sm font-medium"
+          >
+            <BookOpen size={18} /> BiblioDrop
+          </Link>
+
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,72 +126,50 @@ export default function SignInPage() {
             className="mb-8"
           >
             <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-              <LogIn className="text-emerald-500" size={28} />
-              Welcome Back
+               Welcome Back
             </h2>
             <p className="text-neutral-400 text-sm">
-              Enter your credentials to access your library account.
+              Enter your credentials to access your account.
             </p>
           </motion.div>
 
-          <Form onSubmit={onSubmit} className="w-full flex flex-col gap-5">
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="w-full flex flex-col gap-1.5"
-            >
+          <Form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full flex flex-col gap-5"
+          >
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4 }} className="w-full flex flex-col gap-1.5">
               <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <Mail size={16} className="text-emerald-500" />
-                Email Address
+                <Mail size={16} className="text-emerald-500" /> Email Address
               </label>
-              <Input
-                isRequired
-                name="email"
+              <Field
                 type="email"
                 placeholder="john@example.com"
-                variant="bordered"
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500"
-                }}
+                error={errors.email?.message}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: { value: EMAIL_PATTERN, message: "Enter a valid email address" },
+                })}
               />
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              className="w-full flex flex-col gap-1.5"
-            >
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }} className="w-full flex flex-col gap-1.5">
               <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <Lock size={16} className="text-emerald-500" />
-                Password
+                <Lock size={16} className="text-emerald-500" /> Password
               </label>
-              <Input
-                isRequired
-                name="password"
+              <Field
                 type={isVisible ? "text" : "password"}
                 placeholder="Enter your password"
-                variant="bordered"
-                endContent={
+                error={errors.password?.message}
+                endButton={
                   <button
-                    className="focus:outline-none flex items-center justify-center p-2"
                     type="button"
                     onClick={toggleVisibility}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-neutral-400 hover:text-white transition-colors"
                   >
-                    {isVisible ? (
-                      <EyeOff className="text-neutral-400 hover:text-emerald-500 transition-colors" size={20} />
-                    ) : (
-                      <Eye className="text-neutral-400 hover:text-emerald-500 transition-colors" size={20} />
-                    )}
+                    {isVisible ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 }
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500",
-                  innerWrapper: "flex items-center gap-2"
-                }}
+                {...register("password", { required: "Password is required" })}
               />
               <div className="flex justify-end w-full mt-1">
                 <Link href="/forgot-password" className="text-sm text-emerald-500 hover:text-emerald-400 transition-colors">
@@ -146,50 +178,30 @@ export default function SignInPage() {
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.4 }}
-              className="w-full"
-            >
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.4 }} className="w-full">
               <Button
                 type="submit"
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold h-12 rounded-xl mt-2 transition-all shadow-lg shadow-emerald-900/20 border-none"
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold h-12 rounded-xl mt-2 border-none transition-colors"
               >
                 Sign In
               </Button>
             </motion.div>
           </Form>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.4 }}
-            className="flex items-center gap-4 my-6"
-          >
-            <div className="h-px flex-1 bg-white/10"></div>
-            <span className="text-neutral-500 text-sm font-medium">OR</span>
-            <div className="h-1px flex-1 bg-white/10"></div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.4 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="mt-8">
             <Button
               type="button"
               onClick={handleGoogleLogin}
               variant="bordered"
-              className="w-full bg-white/5 border-white/10 hover:bg-white/10 text-white h-12 rounded-xl flex items-center justify-center gap-3 transition-all"
+              className="w-full bg-white/5 border-white/10 hover:bg-white/10 text-white h-12 rounded-xl flex items-center justify-center gap-3 transition-colors"
             >
-              <FcGoogle size={24} />
-              Continue with Google
+              <FcGoogle size={24} /> Continue with Google
             </Button>
-
-            <p className="text-center text-neutral-400 text-sm mt-8">
+            <p className="text-center text-neutral-400 text-sm mt-6">
               Do not have an account?{" "}
-              <Link href="/signup" className="text-emerald-500 hover:text-emerald-400 font-semibold">
+              <Link href="/signup" className="text-emerald-500 font-semibold hover:underline">
                 Sign Up
               </Link>
             </p>

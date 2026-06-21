@@ -4,10 +4,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, EffectFade } from "swiper/modules";
-
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
@@ -16,7 +14,7 @@ const bannerData = [
   {
     id: 1,
     image: "/assets/banner1.png",
-    title: "Your Local Library, Delivered",
+    title: "The Library That Comes to You",
     desc: "Democratizing access to literature. Browse our vast, community-driven collection and have your next great read delivered to your doorstep.",
   },
   {
@@ -36,6 +34,18 @@ const bannerData = [
     image: "/assets/banner4.png",
     title: "Join the Reading Revolution",
     desc: "Connect with a growing community of avid readers. Share reviews, build your wishlist, and manage your reading journey.",
+  },
+  {
+    id: 5,
+    image: "/assets/banner5.png",
+    title: "Order with Absolute Ease",
+    desc: "Browse our extensive catalog, select your desired books, and place an order in just a few clicks. A seamless checkout experience awaits you.",
+  },
+  {
+    id: 6,
+    image: "/assets/banner6.png",
+    title: "Swift Doorstep Delivery",
+    desc: "Track your book's journey from the librarian's shelf straight to your hands. Enjoy fast, reliable, and hassle-free delivery services.",
   },
 ];
 
@@ -66,7 +76,6 @@ const Banner = () => {
               />
             </div>
 
-            {/* Gradient overlay */}
             <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/35 to-black/20" />
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center mx-auto max-w-5xl">
@@ -115,7 +124,7 @@ const Banner = () => {
                   Explore Books
                 </Link>
                 <Link
-                  href="/register"
+                  href="/signup"
                   className="px-8 py-3.5 text-sm font-bold rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/25 hover:border-white/40 transition-all duration-300"
                 >
                   Get Started

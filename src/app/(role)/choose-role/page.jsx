@@ -5,13 +5,14 @@ import { Button } from "@heroui/react";
 import { User, Shield } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
+
 export default function ChooseRolePage() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
 
   const handleRoleSelect = async (selectedRole) => {
     if (!session?.user?.email) {
-      toast.error("User email not found. Please log in again.");
+      toast.error("Session expired. Please log in again.");
       router.push("/signin");
       return;
     }
@@ -19,54 +20,65 @@ export default function ChooseRolePage() {
     const toastId = toast.loading(`Setting up as ${selectedRole}...`);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/update-role`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: session.user.email,
-          role: selectedRole
-        }),
+      const { error } = await authClient.updateUser({
+        role: selectedRole,
       });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (!error) {
         toast.success("Role updated successfully!", { id: toastId });
-        window.location.href = "/";
+
+        router.refresh();
+        // Route to correct dashboard
+        if (selectedRole === "admin") {
+          router.push("/dashboard/admin");
+        } else if (selectedRole === "librarian") {
+          router.push("/dashboard/librarian");
+        } else {
+          router.push("/");
+        }
       } else {
-        toast.error(data.message || "Failed to set role.", { id: toastId });
+        toast.error("Failed to set role.", { id: toastId });
       }
     } catch (error) {
-      console.error(error);
-      toast.error("Network error. Is your backend running?", { id: toastId });
+      toast.error("Something went wrong.", { id: toastId });
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-[#1e0a2d] via-[#0f0c20] to-[#1b1408]">
       <div className="w-full max-w-2xl bg-white/3 backdrop-blur-2xl border border-white/10 rounded-3xl p-10 text-center shadow-[0_0_40px_rgba(0,0,0,0.3)]">
-        <h2 className="text-3xl font-bold text-white mb-2">Welcome to BiblioDrop!</h2>
-        <p className="text-neutral-400 mb-8">How would you like to use our platform?</p>
+        <h2 className="text-3xl font-bold text-white mb-2">
+          Welcome to BiblioDrop!
+        </h2>
+        <p className="text-neutral-400 mb-8">
+          How would you like to use our platform?
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Button
-            onClick={() => handleRoleSelect("user")}
+            onPress={() => handleRoleSelect("user")}
             className="h-40 bg-white/5 border border-white/10 hover:border-emerald-500 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-3 rounded-2xl transition-all"
           >
             <User size={40} className="text-emerald-500" />
-            <span className="text-white text-lg font-semibold">I am a Reader</span>
-            <span className="text-neutral-500 text-xs text-wrap px-2">I want to borrow and read books</span>
+            <span className="text-white text-lg font-semibold">
+              I am a Reader
+            </span>
+            <span className="text-neutral-500 text-xs text-wrap px-2">
+              I want to borrow and read books
+            </span>
           </Button>
 
           <Button
-            onClick={() => handleRoleSelect("librarian")}
+            onPress={() => handleRoleSelect("librarian")}
             className="h-40 bg-white/5 border border-white/10 hover:border-emerald-500 hover:bg-emerald-500/10 flex flex-col items-center justify-center gap-3 rounded-2xl transition-all"
           >
             <Shield size={40} className="text-emerald-500" />
-            <span className="text-white text-lg font-semibold">I am a Librarian</span>
-            <span className="text-neutral-500 text-xs text-wrap px-2">I want to list and share my books</span>
+            <span className="text-white text-lg font-semibold">
+              I am a Librarian
+            </span>
+            <span className="text-neutral-500 text-xs text-wrap px-2">
+              I want to list and share my books
+            </span>
           </Button>
         </div>
       </div>

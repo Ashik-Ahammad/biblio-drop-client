@@ -1,72 +1,120 @@
 "use client";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth-client";
-import { Button, Input, Form } from "@heroui/react";
-import { Eye, EyeOff, Mail, Lock, User, Image as ImageIcon, Shield, ChevronDown, UserPlus } from "lucide-react";
+import { Button, Form } from "@heroui/react";
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  User,
+  Image as ImageIcon,
+  Shield,
+  ChevronDown,
+  UserPlus,
+  BookOpen,
+  AlertCircle,
+} from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import Lottie from "lottie-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import signupAnimation from "../../../../public/assets/signup.json";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const Field = React.forwardRef(function Field(
+  { icon: Icon, endButton, error, className = "", ...props },
+  ref
+) {
+  return (
+    <div className="w-full">
+      <div className="relative w-full">
+        {Icon && (
+          <Icon
+            size={16}
+            className="text-emerald-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10"
+          />
+        )}
+        <input
+          ref={ref}
+          {...props}
+          className={`w-full h-12 rounded-xl bg-white/5 border text-white placeholder-neutral-500 caret-emerald-500 outline-none transition-colors ${
+            error
+              ? "border-red-500/60 focus:border-red-500"
+              : "border-white/10 focus:border-emerald-500"
+          } ${Icon ? "pl-10" : "pl-4"} ${
+            endButton ? "pr-11" : "pr-4"
+          } ${className}`}
+        />
+        {endButton}
+      </div>
+      {error && (
+        <p className="flex items-center gap-1.5 text-red-400 text-xs mt-1.5 ml-1">
+          <AlertCircle size={12} /> {error}
+        </p>
+      )}
+    </div>
+  );
+});
+
 export default function SignUpPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
+  const router = useRouter();
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: {
+      name: "",
+      email: "",
+      image: "",
+      password: "",
+      confirmPassword: "",
+      role: "",
+    },
+  });
 
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  };
+  const toggleVisibility = () => setIsVisible((v) => !v);
+  const toggleConfirmVisibility = () => setIsConfirmVisible((v) => !v);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     const toastId = toast.loading("Creating account...");
 
     try {
-      const formData = new FormData(e.currentTarget);
-      const user = Object.fromEntries(formData.entries());
-      const selectedRole = user.role;
-
-
       const res = await authClient.signUp.email({
-        email: user.email,
-        password: user.password,
-        name: user.name,
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        image: data.image || undefined,
       });
 
       if (res.error) {
-        toast.dismiss(toastId);
-        toast.error(res.error.message);
+        toast.error(res.error.message, { id: toastId });
         return;
       }
 
-      const roleRes = await fetch(`${NEXT_PUBLIC_SERVER_URL}/api/users/update-role`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email, role: selectedRole }),
+      const { error: roleError } = await authClient.updateUser({
+        role: data.role,
       });
 
-      if (roleRes.ok) {
+      if (!roleError) {
         toast.success("Account created successfully!", { id: toastId });
-
-        setTimeout(() => {
-          window.location.href = "/role-check";
-        }, 500);
+        router.refresh();
+        router.push("/role-check");
       } else {
         toast.error("Account created but role failed.", { id: toastId });
       }
-
     } catch (error) {
-      toast.dismiss(toastId);
-      toast.error("Something went wrong!");
-      console.error(error);
+      toast.error("Something went wrong!", { id: toastId });
     }
   };
 
@@ -74,6 +122,8 @@ export default function SignUpPage() {
     try {
       await authClient.signIn.social({
         provider: "google",
+        // 🎯 FIX: Let the magic /role-check page handle the decision!
+        // It will automatically send NEW users to /choose-role and OLD users to /dashboard
         callbackURL: "/role-check",
       });
     } catch (error) {
@@ -81,199 +131,190 @@ export default function SignUpPage() {
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
-  };
-
   return (
     <div className="dark min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-[#1e0a2d] via-[#0f0c20] to-[#1b1408] py-10">
       <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0, scale: 0.95 },
-          visible: { opacity: 1, scale: 1, transition: { duration: 0.4, staggerChildren: 0.1 } }
-        }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
         className="w-full max-w-5xl bg-white/3 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col lg:flex-row-reverse"
       >
-        <div className="lg:w-[45%] p-8 flex items-center justify-center bg-black/20">
-          <div className="w-full max-w-sm sticky top-10">
+        <div className="lg:w-[45%] p-8 hidden sm:flex items-center justify-center bg-black/20">
+          <div className="w-full max-w-sm">
             <Lottie animationData={signupAnimation} loop={true} />
           </div>
         </div>
 
-        <div className="lg:w-[55%] p-8 lg:p-12 flex flex-col justify-center">
-          <motion.div variants={itemVariants} className="mb-6">
-            <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-              <UserPlus className="text-emerald-500" size={28} />
-              Create Account
-            </h2>
-            <p className="text-neutral-400 text-sm">
-              Join our community and explore the world of books.
-            </p>
-          </motion.div>
+        <div className="w-full lg:w-[55%] p-6 sm:p-8 lg:p-12 flex flex-col justify-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-neutral-400 hover:text-emerald-500 transition-colors w-fit mb-8 text-sm font-medium"
+          >
+            <BookOpen size={18} />
+            BiblioDrop
+          </Link>
 
-          <Form onSubmit={onSubmit} className="w-full flex flex-col gap-5">
-            <motion.div variants={itemVariants} className="w-full flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <User size={16} className="text-emerald-500" />
-                Full Name
-              </label>
-              <Input
-                isRequired
-                name="name"
-                placeholder="John Doe"
-                variant="bordered"
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500"
-                }}
+          <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+            <UserPlus className="text-emerald-500" size={28} /> Create Account
+          </h2>
+
+          <Form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full flex flex-col gap-4"
+          >
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.4 }}>
+              <Field
+                icon={User}
+                placeholder="Full Name"
+                error={errors.name?.message}
+                {...register("name", {
+                  required: "Full name is required",
+                  minLength: { value: 2, message: "Name is too short" },
+                })}
               />
             </motion.div>
 
-            <motion.div variants={itemVariants} className="w-full flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <Mail size={16} className="text-emerald-500" />
-                Email Address
-              </label>
-              <Input
-                isRequired
-                name="email"
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.4 }}>
+              <Field
+                icon={Mail}
                 type="email"
-                placeholder="john@email.com"
-                variant="bordered"
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500"
-                }}
+                placeholder="Email Address"
+                error={errors.email?.message}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: EMAIL_PATTERN,
+                    message: "Enter a valid email address",
+                  },
+                })}
               />
             </motion.div>
 
-            <motion.div variants={itemVariants} className="w-full flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <ImageIcon size={16} className="text-emerald-500" />
-                Profile Image URL (Optional)
-              </label>
-              <Input
-                name="image"
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}>
+              <Field
+                icon={ImageIcon}
                 type="url"
-                placeholder="https://example.com/image.jpg"
-                variant="bordered"
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500"
-                }}
+                placeholder="Profile Image URL (Optional)"
+                error={errors.image?.message}
+                {...register("image")}
               />
             </motion.div>
 
-            <motion.div variants={itemVariants} className="w-full flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <Lock size={16} className="text-emerald-500" />
-                Password
-              </label>
-              <Input
-                isRequired
-                name="password"
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.4 }}>
+              <Field
+                icon={Lock}
                 type={isVisible ? "text" : "password"}
-                placeholder="Enter password"
-                variant="bordered"
-                endContent={
-                  <button className="focus:outline-none flex items-center justify-center p-2" type="button" onClick={toggleVisibility}>
-                    {isVisible ? <EyeOff className="text-neutral-400 hover:text-emerald-500" size={20} /> : <Eye className="text-neutral-400 hover:text-emerald-500" size={20} />}
+                placeholder="Password"
+                error={errors.password?.message}
+                endButton={
+                  <button
+                    type="button"
+                    onClick={toggleVisibility}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-neutral-400 hover:text-white transition-colors"
+                  >
+                    {isVisible ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 }
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500",
-                  innerWrapper: "flex items-center gap-2"
-                }}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters",
+                  },
+                })}
               />
             </motion.div>
 
-            <motion.div variants={itemVariants} className="w-full flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <Lock size={16} className="text-emerald-500" />
-                Confirm Password
-              </label>
-              <Input
-                isRequired
-                name="confirmPassword"
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.4 }}>
+              <Field
+                icon={Lock}
                 type={isConfirmVisible ? "text" : "password"}
-                placeholder="Confirm password"
-                variant="bordered"
-                endContent={
-                  <button className="focus:outline-none flex items-center justify-center p-2" type="button" onClick={toggleConfirmVisibility}>
-                    {isConfirmVisible ? <EyeOff className="text-neutral-400 hover:text-emerald-500" size={20} /> : <Eye className="text-neutral-400 hover:text-emerald-500" size={20} />}
+                placeholder="Confirm Password"
+                error={errors.confirmPassword?.message}
+                endButton={
+                  <button
+                    type="button"
+                    onClick={toggleConfirmVisibility}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10 text-neutral-400 hover:text-white transition-colors"
+                  >
+                    {isConfirmVisible ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 }
-                classNames={{
-                  inputWrapper: "bg-white/5 border-white/10 hover:border-emerald-500 focus-within:!border-emerald-500 h-12 text-white shadow-inner",
-                  input: "text-white placeholder:text-neutral-500",
-                  innerWrapper: "flex items-center gap-2"
-                }}
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                  validate: (value) =>
+                    value === watch("password") || "Passwords do not match",
+                })}
               />
-              {passwordError && (
-                <p className="text-red-500 text-xs font-medium mt-1">{passwordError}</p>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.4 }} className="w-full">
+              <div className="relative w-full ">
+                <select
+                  defaultValue=""
+                  className={`w-full h-12 px-3 pl-10 pr-10 bg-white/5 border text-white rounded-xl appearance-none outline-none transition-colors ${
+                    errors.role
+                      ? "border-red-500/60 focus:border-red-500"
+                      : "border-white/10 focus:border-emerald-500"
+                  }`}
+                  {...register("role", { required: "Please select a role" })}
+                >
+                  <option value="" disabled className="text-neutral-500 bg-[#12081c]">
+                    Select your role
+                  </option>
+                  <option value="user" className="bg-[#12081c] text-white">
+                    Reader (User)
+                  </option>
+                  <option value="librarian" className="bg-[#12081c] text-white">
+                    Librarian
+                  </option>
+                </select>
+                <Shield
+                  size={16}
+                  className="text-emerald-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                />
+                <ChevronDown
+                  className="text-neutral-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  size={20}
+                />
+              </div>
+              {errors.role && (
+                <p className="flex items-center gap-1.5 text-red-400 text-xs mt-1.5 ml-1">
+                  <AlertCircle size={12} /> {errors.role.message}
+                </p>
               )}
             </motion.div>
 
-            <motion.div variants={itemVariants} className="w-full flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
-                <Shield size={16} className="text-emerald-500" />
-                Sign Up As
-              </label>
-              <div className="relative w-full">
-                <select
-                  required
-                  name="role"
-                  defaultValue=""
-                  className="w-full h-12 px-3 bg-white/5 border border-white/10 text-white rounded-xl appearance-none outline-none hover:border-emerald-500 focus:border-emerald-500 transition-colors cursor-pointer shadow-inner"
-                >
-                  <option value="" disabled className="text-neutral-500 bg-[#12081c]">Select your role</option>
-                  <option value="user" className="bg-[#12081c] text-white py-2">Reader (User)</option>
-                  <option value="librarian" className="bg-[#12081c] text-white py-2">Librarian</option>
-                </select>
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <ChevronDown className="text-neutral-400" size={20} />
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="w-full mt-2">
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.4 }}>
               <Button
                 type="submit"
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold h-12 rounded-xl transition-all shadow-lg shadow-emerald-900/20 border-none"
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold h-12 rounded-xl mt-2 border-none transition-colors"
               >
                 Create Account
               </Button>
             </motion.div>
           </Form>
 
-          <motion.div variants={itemVariants} className="flex items-center gap-4 my-6">
-            <div className="h-px flex-1 bg-white/10"></div>
-            <span className="text-neutral-500 text-sm font-medium">OR</span>
-            <div className="h-px flex-1 bg-white/10"></div>
-          </motion.div>
+          <Button
+            type="button"
+            onClick={handleGoogleLogin}
+            variant="bordered"
+            className="w-full bg-white/5 border-white/10 hover:bg-white/10 text-white h-12 rounded-xl mt-6 flex items-center justify-center gap-3 transition-colors"
+          >
+            <FcGoogle size={24} /> Sign up with Google
+          </Button>
 
-          <motion.div variants={itemVariants}>
-            <Button
-              type="button"
-              onClick={handleGoogleLogin}
-              variant="bordered"
-              className="w-full bg-white/5 border-white/10 hover:bg-white/10 text-white h-12 rounded-xl flex items-center justify-center gap-3 transition-all"
+          <p className="text-center text-neutral-400 text-sm mt-6">
+            Already have an account?{" "}
+            <Link
+              href="/signin"
+              className="text-emerald-500 font-semibold hover:underline"
             >
-              <FcGoogle size={24} />
-              Sign up with Google
-            </Button>
-
-            <p className="text-center text-neutral-400 text-sm mt-6">
-              Already have an account?{" "}
-              <Link href="/signin" className="text-emerald-500 hover:text-emerald-400 font-semibold">
-                Sign In
-              </Link>
-            </p>
-          </motion.div>
+              Sign In
+            </Link>
+          </p>
         </div>
       </motion.div>
     </div>

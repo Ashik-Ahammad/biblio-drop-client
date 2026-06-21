@@ -1,47 +1,42 @@
-"use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export default function RoleCheckPage() {
-  const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
+export default async function RoleCheckPage() {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
 
-  useEffect(() => {
-    if (isPending) return;
+  // Redirect unauthenticated users
+  if (!session) {
+    redirect("/signin");
+  }
 
-    const verifyRoleFromDB = async (email) => {
-      try {
-        const res = await fetch(`http://localhost:8000/api/users/${email}`);
-        const data = await res.json();
+  const user = session.user;
+  const role = user?.role || "user";
 
-        if (data.success && data.isRoleSelected) {
-          router.push("/");
-        } else {
-          router.push("/choose-role");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        router.push("/choose-role");
-      }
-    };
+  // 🎯 THE FIX: Magic Logic for FIRST-TIME Google Login
+  // Check if account was created within the last 2 minutes
+  const createdAt = new Date(user.createdAt).getTime();
+  const updatedAt = user.updatedAt ? new Date(user.updatedAt).getTime() : createdAt;
+  const isNewUser = (Date.now() - createdAt) < 120000; // 120,000 ms = 2 mins
 
-    if (session?.user?.email) {
-      verifyRoleFromDB(session.user.email);
-    } else {
-      router.push("/signin");
-    }
-  }, [session, isPending, router]);
+  // If timestamps are identical, the profile is untouched (no role selected)
+  const isProfileUntouched = createdAt === updatedAt;
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br from-[#1e0a2d] via-[#0f0c20] to-[#1b1408]">
-      <div className="flex flex-col items-center gap-4 bg-white/3 backdrop-blur-2xl border border-white/10 p-8 rounded-3xl shadow-2xl">
-        <Loader2 className="text-emerald-500 animate-spin" size={48} />
-        <p className="text-neutral-300 text-lg font-medium animate-pulse">
-          Setting up your account...
-        </p>
-      </div>
-    </div>
-  );
+  // Force brand new Google users to select a role
+  if (isNewUser && isProfileUntouched) {
+    redirect("/choose-role");
+  }
+
+  // 🎯 Existing Users & Email Signups Routing
+  if (role === "admin") {
+    redirect("/dashboard/admin");
+  } else if (role === "librarian") {
+    redirect("/dashboard/librarian");
+  } else {
+    redirect("/"); // Default reader goes to home
+  }
+
+  return null;
 }

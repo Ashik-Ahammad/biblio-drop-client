@@ -66,7 +66,7 @@ export default async function BookDetailsPage({ params }) {
             Collections
           </Link>{" "}
           <ChevronRight size={14} />
-          <span className="text-white truncate max-w-[200px]">
+          <span className="text-white truncate max-w-50">
             {book.title}
           </span>
         </nav>
@@ -79,7 +79,7 @@ export default async function BookDetailsPage({ params }) {
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-          <div className="lg:col-span-5 relative w-full max-w-md aspect-[2/3] rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a]">
+          <div className="lg:col-span-5 relative w-full max-w-md aspect-2/3 rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a]">
             <Image
               src={book.coverImage}
               alt={book.title}
@@ -116,7 +116,7 @@ export default async function BookDetailsPage({ params }) {
 
             <div className="mb-12">
               <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-widest mb-4">
-                Description 
+                Description
               </h3>
               <p className="text-neutral-300 leading-relaxed text-lg font-light">
                 {book.description}

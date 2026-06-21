@@ -89,7 +89,7 @@ export default function CheckoutButton({ book, isAvailable, currentUser, hasAlre
       {isLoading ? (
         "Processing..."
       ) : !currentUser ? (
-        "Login to Request"
+        "Login to Order"
       ) : isOwner ? (
         "You Own This Book"
       ) : (
