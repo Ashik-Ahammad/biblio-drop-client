@@ -5,9 +5,8 @@ import { auth } from "../auth";
 
 const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
-// ==========================================
 // Reusable Helper: Get JWT Token
-// ==========================================
+
 export const getJwtToken = async () => {
   try {
     const { token } = await auth.api.getToken({
@@ -20,9 +19,7 @@ export const getJwtToken = async () => {
   }
 };
 
-// ==========================================
 // GET Request Wrapper
-// ==========================================
 export const serverFetch = async (path, options = {}) => {
   const token = await getJwtToken();
 
@@ -43,9 +40,8 @@ export const serverFetch = async (path, options = {}) => {
   return res.json();
 };
 
-// ==========================================
 // POST, PATCH, DELETE Request Wrapper
-// ==========================================
+
 export const serverMutation = async (path, data, method = 'POST') => {
   const token = await getJwtToken();
 

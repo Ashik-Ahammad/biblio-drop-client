@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "@heroui/react";
-import { ArrowRight } from "lucide-react";
 import BookCard from "@/components/BookCard";
 
 export default function FeaturedBooks({ books = [] }) {
@@ -64,15 +63,11 @@ export default function FeaturedBooks({ books = [] }) {
         >
           <Link
             href="/books"
-            className="group flex items-center gap-3 px-8 h-14 bg-[#0A0A0A] text-white font-semibold rounded-full border border-white/10 transition-all duration-400 no-underline hover:no-underline hover:border-emerald-500/50 hover:bg-emerald-500/10 hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.2)]"
+            className="relative z-10 flex items-center justify-center w-[250px] h-[50px] text-white no-underline transition-all duration-500 cursor-pointer group
+            before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-full before:-z-10 before:bg-white/10 before:transition-all before:duration-300 hover:before:opacity-0 hover:before:scale-50
+            after:content-[''] after:absolute after:top-0 after:left-0 after:w-full after:h-full after:-z-10 after:opacity-0 after:border after:border-white/50 after:transition-all after:duration-300 after:scale-125 hover:after:opacity-100 hover:after:scale-100"
           >
-            <span className="tracking-wide">Browse Books</span>
-            <span className="bg-white/5 rounded-full p-1.5 transition-colors duration-300 group-hover:bg-emerald-500/20">
-              <ArrowRight
-                size={18}
-                className="text-neutral-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-emerald-400"
-              />
-            </span>
+            Discover More Books
           </Link>
         </motion.div>
       </div>

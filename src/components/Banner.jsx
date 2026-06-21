@@ -119,13 +119,13 @@ const Banner = () => {
               >
                 <Link
                   href="/books"
-                  className="px-8 py-3.5 text-sm font-bold rounded-full bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-2xl shadow-emerald-900/50 border border-emerald-500/30 transition-all hover:scale-105 duration-300"
+                  className="px-8 py-3.5 text-sm font-bold  bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-2xl shadow-emerald-900/50 border border-emerald-500/30 transition-all hover:scale-105 duration-300"
                 >
                   Explore Books
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-8 py-3.5 text-sm font-bold rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/25 hover:border-white/40 transition-all duration-300"
+                  className="px-8 py-3.5 text-sm font-bold  bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white border border-white/25 hover:border-white/40 transition-all duration-300"
                 >
                   Get Started
                 </Link>

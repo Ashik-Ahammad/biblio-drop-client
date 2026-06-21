@@ -1,11 +1,10 @@
-import React from 'react';
+import ManageUsersClient from "./ManageUsersClient";
 
-const AdminManageUsersPage = () => {
-  return (
-    <div>
-AdminManageUsersPage
-    </div>
-  );
-};
+export default async function ManageUsersPage() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`, {
+    cache: "no-store",
+  });
+  const users = await res.json();
 
-export default AdminManageUsersPage;
+  return <ManageUsersClient initialUsers={users} />;
+}

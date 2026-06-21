@@ -26,7 +26,6 @@ export default function ApprovalsTable({ books }) {
 
       if (data.success) {
         toast.success("Book published successfully!");
-
         setTableItems((prev) => prev.filter((book) => book.id !== id));
         router.refresh();
       } else {
@@ -50,7 +49,6 @@ export default function ApprovalsTable({ books }) {
 
       if (data.success) {
         toast.success("Book deleted permanently");
-
         setTableItems((prev) => prev.filter((book) => book.id !== bookToDelete.id));
         setIsDeleteOpen(false);
         router.refresh();
@@ -69,7 +67,6 @@ export default function ApprovalsTable({ books }) {
         <Table.ScrollContainer>
           <Table.Content aria-label="Approvals Table" className="min-w-[1000px]">
             <Table.Header className="bg-white/5 border-b border-white/10">
-
               <Table.Column isRowHeader className="text-neutral-400 font-bold uppercase text-xs py-4">Title</Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">Author</Table.Column>
               <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">Category</Table.Column>
@@ -80,89 +77,79 @@ export default function ApprovalsTable({ books }) {
             </Table.Header>
 
             <Table.Body>
-              {tableItems.length === 0 ? (
-                <Table.Row>
-                  <Table.Cell colSpan={7}>
-                    <div className="text-neutral-500 py-16 flex flex-col items-center justify-center gap-3">
-                       <BookOpen size={40} className="text-neutral-700" />
-                       <p>No pending books to approve.</p>
-                    </div>
-                  </Table.Cell>
-                  <Table.Cell className="hidden"></Table.Cell>
-                  <Table.Cell className="hidden"></Table.Cell>
-                  <Table.Cell className="hidden"></Table.Cell>
-                  <Table.Cell className="hidden"></Table.Cell>
-                  <Table.Cell className="hidden"></Table.Cell>
-                  <Table.Cell className="hidden"></Table.Cell>
-                </Table.Row>
-              ) : (
-                tableItems.map((book) => {
-                  const formattedDate = book.createdAt
-                    ? new Date(book.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                    : "Unknown";
+              {tableItems.map((book) => {
+                const formattedDate = book.createdAt
+                  ? new Date(book.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                  : "Unknown";
 
-                  return (
-                    <Table.Row key={book.id} className="hover:bg-white/2 border-b border-white/5 transition-colors group">
-                      <Table.Cell className="py-4">
-                        <p className="font-bold text-white group-hover:text-emerald-400 transition-colors truncate max-w-[200px]" title={book.title}>
-                          {book.title}
-                        </p>
-                      </Table.Cell>
+                return (
+                  <Table.Row key={book.id} className="hover:bg-white/2 border-b border-white/5 transition-colors group">
+                    <Table.Cell className="py-4">
+                      <p className="font-bold text-white group-hover:text-emerald-400 transition-colors truncate max-w-[200px]" title={book.title}>
+                        {book.title}
+                      </p>
+                    </Table.Cell>
 
-                      <Table.Cell className="py-4 text-neutral-300">
-                        {book.author}
-                      </Table.Cell>
+                    <Table.Cell className="py-4 text-neutral-300">
+                      {book.author}
+                    </Table.Cell>
 
-                      <Table.Cell className="py-4">
-                         <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                           {book.category}
-                         </span>
-                      </Table.Cell>
+                    <Table.Cell className="py-4">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                        {book.category}
+                      </span>
+                    </Table.Cell>
 
-                      <Table.Cell className="py-4 font-bold text-white">
-                        ${Number(book.deliveryFee).toFixed(2)}
-                      </Table.Cell>
+                    <Table.Cell className="py-4 font-bold text-white">
+                      ${Number(book.deliveryFee).toFixed(2)}
+                    </Table.Cell>
 
-                      <Table.Cell className="py-4 text-neutral-400 truncate max-w-[150px]" title={book.librarianEmail}>
-                        {book.librarianEmail}
-                      </Table.Cell>
+                    <Table.Cell className="py-4 text-neutral-400 truncate max-w-[150px]" title={book.librarianEmail}>
+                      {book.librarianEmail}
+                    </Table.Cell>
 
-                      <Table.Cell className="py-4 text-neutral-400 text-sm">
-                        {formattedDate}
-                      </Table.Cell>
+                    <Table.Cell className="py-4 text-neutral-400 text-sm">
+                      {formattedDate}
+                    </Table.Cell>
 
-                      <Table.Cell className="py-4">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white transition-all duration-300"
-                            isLoading={loadingId === `approve-${book.id}`}
-                            onPress={() => handleApprove(book.id)}
-                          >
-                            <CheckCircle size={15} className="mr-1" /> Approve
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300"
-                            onPress={() => {
-                              setBookToDelete(book);
-                              setIsDeleteOpen(true);
-                            }}
-                          >
-                            <Trash2 size={15} className="mr-1" /> Delete
-                          </Button>
-                        </div>
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                })
-              )}
+                    <Table.Cell className="py-4">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="bg-emerald-600/20 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-600 hover:text-white transition-all duration-300"
+                          isLoading={loadingId === `approve-${book.id}`}
+                          onPress={() => handleApprove(book.id)}
+                        >
+                          <CheckCircle size={15} className="mr-1" /> Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300"
+                          onPress={() => {
+                            setBookToDelete(book);
+                            setIsDeleteOpen(true);
+                          }}
+                        >
+                          <Trash2 size={15} className="mr-1" /> Delete
+                        </Button>
+                      </div>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
             </Table.Body>
           </Table.Content>
         </Table.ScrollContainer>
       </Table>
+
+      {tableItems.length === 0 && (
+        <div className="text-neutral-500 py-16 flex flex-col items-center justify-center gap-3">
+          <BookOpen size={40} className="text-neutral-700" />
+          <p>No pending books to approve.</p>
+        </div>
+      )}
 
       <AlertDialog isOpen={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialog.Backdrop>

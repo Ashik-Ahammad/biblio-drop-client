@@ -31,7 +31,6 @@ export default async function UserDeliveryHistoryPage() {
       </div>
 
       {orders.length === 0 ? (
-        /* Empty State */
         <div className="bg-white/2 border border-white/5 rounded-3xl p-16 text-center flex flex-col items-center justify-center backdrop-blur-3xl">
           <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10">
             <Package className="text-neutral-400" size={28} />
@@ -64,6 +63,9 @@ export default async function UserDeliveryHistoryPage() {
                     Book Title
                   </Table.Column>
                   <Table.Column className="text-neutral-400 font-bold tracking-wider uppercase text-xs">
+                    Librarian
+                  </Table.Column>
+                  <Table.Column className="text-neutral-400 font-bold tracking-wider uppercase text-xs">
                     Date & Time
                   </Table.Column>
                   <Table.Column className="text-neutral-400 font-bold tracking-wider uppercase text-xs">
@@ -77,14 +79,14 @@ export default async function UserDeliveryHistoryPage() {
                 <Table.Body className="divide-y divide-white/5">
                   {orders.map((order) => {
                     const shortOrderId = order._id
-                      .substring(order._id.length - 6)
+                      .substring(order._id.length - 8)
                       .toUpperCase();
                     const orderDate = new Date(order.orderedAt);
 
                     return (
                       <Table.Row
                         key={order._id}
-                        className="hover:bg-white/2transition-colors"
+                        className="hover:bg-white/2 transition-colors"
                       >
                         <Table.Cell>
                           <span className="font-mono font-medium text-neutral-300 bg-white/5 px-2 py-1 rounded-md text-xs border border-white/10">
@@ -93,8 +95,19 @@ export default async function UserDeliveryHistoryPage() {
                         </Table.Cell>
 
                         <Table.Cell>
-                          <span className="font-bold text-white text-base">
-                            {order.book.title}
+                          <div className="flex flex-col">
+                            <span className="font-bold text-white text-base">
+                              {order.book.title}
+                            </span>
+                            <span className="text-xs text-neutral-500 mt-0.5">
+                              {order.book.category || "Uncategorized"}
+                            </span>
+                          </div>
+                        </Table.Cell>
+
+                        <Table.Cell>
+                          <span className="text-sm text-neutral-400">
+                            {order.book.librarianEmail || "N/A"}
                           </span>
                         </Table.Cell>
 
