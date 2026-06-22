@@ -8,12 +8,11 @@ import { ShoppingBag, Lock, CheckCircle } from "lucide-react";
 export default function CheckoutButton({ book, isAvailable, currentUser, hasAlreadyOrdered }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Prevent ordering if already ordered
   if (hasAlreadyOrdered) {
     return (
       <Button
         isDisabled
-        className="bg-emerald-500/10 text-emerald-500 font-bold px-8 h-14 rounded-2xl flex items-center gap-2 border border-emerald-500/20"
+        className="bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-500 font-bold px-8 h-14 rounded-2xl flex items-center gap-2 border border-emerald-200 dark:border-emerald-500/20 transition-colors duration-300"
       >
         <CheckCircle size={18} />
         Already Ordered
@@ -21,12 +20,11 @@ export default function CheckoutButton({ book, isAvailable, currentUser, hasAlre
     );
   }
 
-  // Prevent ordering if book is unavailable Checked Out or Pending
   if (!isAvailable) {
     return (
       <Button
         isDisabled
-        className="bg-neutral-800 text-neutral-400 font-bold px-8 h-14 rounded-2xl flex items-center gap-2 border border-white/5"
+        className="bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 font-bold px-8 h-14 rounded-2xl flex items-center gap-2 border border-neutral-300 dark:border-white/5 transition-colors duration-300"
       >
         <Lock size={18} />
         Currently Unavailable
@@ -82,8 +80,8 @@ export default function CheckoutButton({ book, isAvailable, currentUser, hasAlre
       isDisabled={isDisabled}
       className={`flex-1 h-14 text-base font-bold rounded-2xl flex items-center gap-2 transition-all duration-300 ${
         !isDisabled
-          ? "bg-white text-black hover:scale-[1.02] hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
-          : "bg-white/5 text-neutral-500"
+          ? "bg-neutral-900 dark:bg-white text-white dark:text-black hover:scale-[1.02] hover:shadow-[0_0_20px_-5px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
+          : "bg-neutral-100 dark:bg-white/5 text-neutral-400 dark:text-neutral-500"
       }`}
     >
       {isLoading ? (

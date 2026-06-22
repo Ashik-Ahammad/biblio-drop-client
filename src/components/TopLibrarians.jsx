@@ -28,7 +28,6 @@ export default async function TopLibrarians() {
       }
     });
 
-
     const sortedEmails = Object.keys(librarianDeliveryCount)
       .sort((a, b) => librarianDeliveryCount[b] - librarianDeliveryCount[a])
       .slice(0, 3);

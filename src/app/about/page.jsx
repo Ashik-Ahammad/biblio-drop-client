@@ -1,29 +1,41 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { Search, ShoppingBag, Truck, BookOpen, ShieldCheck, Clock } from "lucide-react";
+import {
+  Search,
+  ShoppingBag,
+  Truck,
+  BookOpen,
+  ShieldCheck,
+  Clock,
+} from "lucide-react";
+import Image from "next/image";
 
 export default function AboutPage() {
   const steps = [
     {
       icon: Search,
       title: "1. Browse & Discover",
-      description: "Explore our vast collection of books across multiple categories. Find your next favorite read easily.",
+      description:
+        "Explore our vast collection of books across multiple categories. Find your next favorite read easily.",
     },
     {
       icon: ShoppingBag,
       title: "2. Place Your Order",
-      description: "Select the book you want and place a request. Our system securely logs your order instantly.",
+      description:
+        "Select the book you want and place a request. Our system securely logs your order instantly.",
     },
     {
       icon: Truck,
       title: "3. Fast Dispatch",
-      description: "The librarian confirms your order and dispatches it. Track your order status right from your dashboard.",
+      description:
+        "The librarian confirms your order and dispatches it. Track your order status right from your dashboard.",
     },
     {
       icon: BookOpen,
       title: "4. Receive & Read",
-      description: "Get the book delivered right to your doorstep. Dive into your reading journey without any hassle.",
+      description:
+        "Get the book delivered right to your doorstep. Dive into your reading journey without any hassle.",
     },
   ];
 
@@ -31,19 +43,20 @@ export default function AboutPage() {
     {
       icon: ShieldCheck,
       title: "Secure Packaging",
-      description: "All books are carefully packaged to ensure they reach you in pristine condition.",
+      description:
+        "All books are carefully packaged to ensure they reach you in pristine condition.",
     },
     {
       icon: Clock,
       title: "Delivery Timeframe",
-      description: "Standard delivery takes 48-72 hours depending on your location and the librarian's availability.",
+      description:
+        "Standard delivery takes 48-72 hours depending on your location and the librarian's availability.",
     },
   ];
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-[#050505] text-neutral-900 dark:text-white py-20 px-4 sm:px-6 lg:px-8 transition-colors duration-300 mt-10">
       <div className="max-w-7xl mx-auto space-y-24">
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -54,14 +67,18 @@ export default function AboutPage() {
             About Biblio<span className="text-emerald-500">Drop</span>
           </h1>
           <p className="text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
-            Your Local Library, Delivered. We bridge the gap between readers and book owners, making it easier than ever to discover, borrow, and read books from your community.
+            Your Local Library, Delivered. We bridge the gap between readers and
+            book owners, making it easier than ever to discover, borrow, and
+            read books from your community.
           </p>
         </motion.div>
 
         <section>
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
-            <p className="text-neutral-600 dark:text-neutral-400">Four simple steps to get your favorite books.</p>
+            <p className="text-neutral-600 dark:text-neutral-400">
+              Four simple steps to get your favorite books.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -93,7 +110,8 @@ export default function AboutPage() {
             <div>
               <h2 className="text-3xl font-bold mb-6">Ordering Guidelines</h2>
               <p className="text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed">
-                To maintain a smooth and reliable platform for everyone, we have set up a few standard guidelines for our delivery network.
+                To maintain a smooth and reliable platform for everyone, we have
+                set up a few standard guidelines for our delivery network.
               </p>
               <div className="space-y-6">
                 {rules.map((rule, i) => (
@@ -103,18 +121,28 @@ export default function AboutPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-lg mb-1">{rule.title}</h4>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">{rule.description}</p>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                        {rule.description}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="relative h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-neutral-200 dark:border-white/10 bg-neutral-100 dark:bg-white/5 flex items-center justify-center">
-               <BookOpen size={100} className="text-neutral-300 dark:text-neutral-700 opacity-50" />
+
+            <div className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-neutral-200 dark:border-white/10 shadow-md">
+              <Image
+                src="/assets/about.png"
+                alt="About BiblioDrop Guidelines"
+                fill
+                className="object-cover transition-opacity duration-300 hover:opacity-90"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
             </div>
+
           </div>
         </section>
-
       </div>
     </div>
   );

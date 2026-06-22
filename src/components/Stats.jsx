@@ -11,7 +11,7 @@ export default async function Stats() {
 
     const [usersRes, booksRes, ordersRes] = await Promise.all([
       fetch(`${baseUrl}/api/users`, { next: { revalidate: 60 } }),
-      fetch(`${baseUrl}/api/books`, { next: { revalidate: 60 } }),
+      fetch(`${baseUrl}/api/books?role=admin`, { next: { revalidate: 60 } }),
       fetch(`${baseUrl}/api/orders`, { next: { revalidate: 60 } })
     ]);
 

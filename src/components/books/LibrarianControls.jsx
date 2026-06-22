@@ -33,16 +33,16 @@ export default function LibrarianControls({ bookId, bookTitle, currentStatus, bo
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-4 mb-8 p-5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl backdrop-blur-md">
-      <p className="w-full text-sm font-bold text-emerald-400 mb-2">Librarian Controls</p>
+    <div className="flex flex-wrap items-center gap-4 mb-8 p-5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-2xl backdrop-blur-md transition-colors duration-300">
+      <p className="w-full text-sm font-bold text-emerald-700 dark:text-emerald-400 mb-2 transition-colors duration-300">Librarian Controls</p>
 
-      {/*  Edit Modal */}
+      {/* Edit Modal */}
       <EditBookModal book={bookData} />
 
       {/* Unpublish Toggle Button */}
       <Button
         variant="flat"
-        className="bg-white/10 text-white hover:bg-white/20 font-bold"
+        className="bg-neutral-200 dark:bg-white/10 text-neutral-800 dark:text-white hover:bg-neutral-300 dark:hover:bg-white/20 font-bold transition-colors duration-300"
         isLoading={isToggling}
         startContent={isPublished ? <EyeOff size={16}/> : <Eye size={16}/>}
         onPress={handleUnpublish}
@@ -50,7 +50,7 @@ export default function LibrarianControls({ bookId, bookTitle, currentStatus, bo
         {isPublished ? "Unpublish" : "Publish"}
       </Button>
 
-      {/*  Reusable Delete Dialog */}
+      {/* Delete Dialog */}
       <DeleteBookDialog bookId={bookId} bookTitle={bookTitle} />
     </div>
   );
