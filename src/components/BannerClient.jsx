@@ -37,8 +37,8 @@ const BannerClient = ({ bannerData }) => {
               />
             </div>
 
-            {/* ✅ Light Mode-এর সাদা ভাবটা কমিয়ে দেওয়া হয়েছে (White opacity reduced) */}
-            <div className="absolute inset-0 bg-linear-to-t from-white/60 via-white/20 to-transparent dark:from-black/85 dark:via-black/35 dark:to-black/20 transition-colors duration-500" />
+
+            <div className="absolute inset-0 bg-white/30 dark:bg-black/60 transition-colors duration-500" />
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center mx-auto max-w-5xl">
               <motion.div
@@ -46,7 +46,7 @@ const BannerClient = ({ bannerData }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3 }}
-                className="mb-4 inline-flex items-center gap-2 bg-black/5 dark:bg-white/10 backdrop-blur-sm border border-black/10 dark:border-white/20 text-white dark:text-white/80 text-xs font-semibold px-4 py-1.5 rounded-full transition-colors"
+                className="mb-4 inline-flex items-center gap-2 bg-black/10 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 text-white dark:text-white/80 text-xs font-semibold px-4 py-1.5 rounded-full transition-colors"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                 Community-driven book platform
@@ -67,7 +67,7 @@ const BannerClient = ({ bannerData }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-                className="text-base md:text-lg lg:text-xl text-white mb-10 max-w-2xl leading-relaxed transition-colors font-medium"
+                className="text-base md:text-lg lg:text-xl text-white mb-10 max-w-2xl leading-relaxed transition-colors font-medium drop-shadow-md"
               >
                 {slide.desc}
               </motion.p>
@@ -87,7 +87,7 @@ const BannerClient = ({ bannerData }) => {
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-8 py-3.5 text-sm font-bold bg-white/40 dark:bg-white/10 hover:bg-white/60 dark:hover:bg-white/20 backdrop-blur-md text-neutral-900 dark:text-white border border-black/10 dark:border-white/25 hover:border-black/30 dark:hover:border-white/40 transition-all duration-300"
+                  className="px-8 py-3.5 text-sm font-bold bg-white/20 dark:bg-white/10 hover:bg-white/40 dark:hover:bg-white/20 backdrop-blur-md text-white border border-white/30 dark:border-white/25 hover:border-white/50 dark:hover:border-white/40 transition-all duration-300"
                 >
                   Get Started
                 </Link>

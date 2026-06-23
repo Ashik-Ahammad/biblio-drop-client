@@ -40,8 +40,7 @@ export default function PopularCategories() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-
-        const res = await getAllBooks("", "", 1, 100);
+        const res = await getAllBooks({ limit: 1000 });
 
         if (res && res.data && Array.isArray(res.data)) {
           setBooks(res.data);
@@ -82,18 +81,19 @@ export default function PopularCategories() {
       >
         {categories.map((cat) => {
           const Icon = cat.icon;
-          // Guard Clause: books অ্যারে না হলে ০ দেখাবে
           const safeBooks = Array.isArray(books) ? books : [];
-          const bookCount = safeBooks.filter(
-            (book) => book.category === cat.key || book.category === cat.label
-          ).length;
+
+          const bookCount = safeBooks.filter((book) => {
+            const dbCat = book.category;
+            return dbCat === cat.key || dbCat === cat.label || (cat.key === "Mystery" && dbCat === "Thriller");
+          }).length;
 
           return (
             <motion.div key={cat.key} variants={itemVariants}>
-              <Link href="/books" className="block h-full">
+              <Link href={`/books?category=${encodeURIComponent(cat.key)}`} className="block h-full">
                 <motion.div
                   whileHover={{ y: -6, scale: 1.02 }}
-                  className="group relative h-full flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0a0c10] border border-neutral-200 dark:border-white/5 transition-all duration-500"
+                  className="group relative h-full flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0a0c10] border border-neutral-200 dark:border-white/5 transition-all duration-500 overflow-hidden"
                 >
                   <div className={`absolute -inset-px bg-linear-to-b ${cat.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                   <div className="relative z-10 mb-4 p-4 rounded-full bg-neutral-100 dark:bg-white/5 border dark:border-white/10 group-hover:bg-neutral-200 dark:group-hover:bg-white/10 transition-colors duration-500">

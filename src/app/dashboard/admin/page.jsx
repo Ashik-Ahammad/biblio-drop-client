@@ -13,14 +13,14 @@ export default async function AdminPage() {
   let categoryData = [];
 
   try {
-    // এখানে লিমিট ১০০০ দেওয়া হলো যাতে ড্যাশবোর্ড সব বইয়ের সঠিক স্ট্যাটাস পায়
+
     const [usersData, booksResponse, ordersData] = await Promise.all([
       getAllUsers(),
       getAllBooksForAdmin(1, 1000),
       getAllOrders(),
     ]);
 
-    // ডাটা সঠিকভাবে এক্সট্রাক্ট করা হচ্ছে
+    
     const users = Array.isArray(usersData) ? usersData : usersData?.data || [];
     const books = booksResponse?.success ? booksResponse.data : Array.isArray(booksResponse) ? booksResponse : [];
     const orders = Array.isArray(ordersData) ? ordersData : ordersData?.data || [];
