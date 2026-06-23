@@ -17,9 +17,9 @@ export default function ContactPage() {
     setIsSubmitting(true);
     setError("");
 
-    const serviceID = "YOUR_SERVICE_ID";
-    const templateID = "YOUR_TEMPLATE_ID";
-    const publicKey = "YOUR_PUBLIC_KEY";
+    const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
     emailjs.sendForm(serviceID, templateID, formRef.current, publicKey).then(
       (result) => {
@@ -101,7 +101,7 @@ export default function ContactPage() {
                   </label>
                   <input
                     type="text"
-                    name="user_name"
+                    name="name"
                     required
                     placeholder="John Doe"
                     className="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-white/10 bg-neutral-50 dark:bg-white/5 text-neutral-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all"
@@ -113,7 +113,7 @@ export default function ContactPage() {
                   </label>
                   <input
                     type="email"
-                    name="user_email"
+                    name="email"
                     required
                     placeholder="john@example.com"
                     className="w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-white/10 bg-neutral-50 dark:bg-white/5 text-neutral-900 dark:text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all"

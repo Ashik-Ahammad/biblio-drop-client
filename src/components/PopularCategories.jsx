@@ -1,23 +1,11 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  Book,
-  BookOpen,
-  Rocket,
-  Wand2,
-  Search,
-  Heart,
-  Ghost,
-  User,
-  Sparkles,
-  Landmark,
-  GraduationCap,
-  Image as ImageIcon,
+  Book, BookOpen, Rocket, Wand2, Search, Heart, Ghost, User,
+  Sparkles, Landmark, GraduationCap, Image as ImageIcon
 } from "lucide-react";
-
 import { getAllBooks } from "@/lib/api/books";
 
 const categories = [
@@ -37,10 +25,7 @@ const categories = [
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const itemVariants = {
@@ -55,10 +40,17 @@ export default function PopularCategories() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const allBooks = await getAllBooks();
-        setBooks(allBooks);
+
+        const res = await getAllBooks("", "", 1, 100);
+
+        if (res && res.data && Array.isArray(res.data)) {
+          setBooks(res.data);
+        } else {
+          setBooks([]);
+        }
       } catch (error) {
-        console.error("Failed to load books for categories:", error);
+        console.error("Failed to load books:", error);
+        setBooks([]);
       } finally {
         setIsLoading(false);
       }
@@ -69,27 +61,15 @@ export default function PopularCategories() {
 
   return (
     <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto w-full transition-colors duration-300">
-
       <div className="flex flex-col items-center justify-center text-center mb-16">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-6 transition-colors">
-            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 transition-colors" />
-            <span className="text-emerald-600 dark:text-emerald-400 font-medium text-xs tracking-widest uppercase transition-colors">
-              Book Categories
-            </span>
+        <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 mb-6">
+            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-emerald-600 dark:text-emerald-400 font-medium text-xs tracking-widest uppercase">Book Categories</span>
           </div>
-
-          <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight mb-5 transition-colors">
+          <h2 className="text-3xl md:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight mb-5">
             Discover Your Next Read
           </h2>
-          <p className="text-neutral-600 dark:text-zinc-400 max-w-2xl mx-auto text-base md:text-lg leading-relaxed transition-colors">
-            Dive into our vast library categorized just for you. Whether you are searching for spine-chilling horror or an insightful biography, your next great adventure awaits.
-          </p>
         </motion.div>
       </div>
 
@@ -102,8 +82,9 @@ export default function PopularCategories() {
       >
         {categories.map((cat) => {
           const Icon = cat.icon;
-
-          const bookCount = books.filter(
+          // Guard Clause: books অ্যারে না হলে ০ দেখাবে
+          const safeBooks = Array.isArray(books) ? books : [];
+          const bookCount = safeBooks.filter(
             (book) => book.category === cat.key || book.category === cat.label
           ).length;
 
@@ -112,24 +93,15 @@ export default function PopularCategories() {
               <Link href="/books" className="block h-full">
                 <motion.div
                   whileHover={{ y: -6, scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group relative h-full flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0a0c10] border border-neutral-200 dark:border-white/5 overflow-hidden transition-all duration-500 hover:border-neutral-300 dark:hover:border-white/10 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-black/50"
+                  className="group relative h-full flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0a0c10] border border-neutral-200 dark:border-white/5 transition-all duration-500"
                 >
                   <div className={`absolute -inset-px bg-linear-to-b ${cat.glow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
-                  <div className="relative z-10 mb-4 p-4 rounded-full bg-neutral-100 dark:bg-white/5 ring-1 ring-neutral-200 dark:ring-white/10 group-hover:bg-neutral-200 dark:group-hover:bg-white/10 transition-colors duration-500">
-                    <Icon
-                      className="w-6 h-6 sm:w-8 sm:h-8 text-neutral-600 dark:text-zinc-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors duration-500"
-                      strokeWidth={1.5}
-                    />
+                  <div className="relative z-10 mb-4 p-4 rounded-full bg-neutral-100 dark:bg-white/5 border dark:border-white/10 group-hover:bg-neutral-200 dark:group-hover:bg-white/10 transition-colors duration-500">
+                    <Icon className="w-6 h-6 text-neutral-600 dark:text-zinc-300" strokeWidth={1.5} />
                   </div>
-
                   <div className="relative z-10 text-center flex flex-col gap-1">
-                    <h3 className="text-sm sm:text-base font-semibold text-neutral-800 dark:text-zinc-300 group-hover:text-black dark:group-hover:text-white transition-colors duration-500">
-                      {cat.label}
-                    </h3>
-
-                    <span className="text-xs font-medium text-neutral-500 dark:text-zinc-500 group-hover:text-neutral-700 dark:group-hover:text-zinc-300 transition-colors duration-500">
+                    <h3 className="text-sm sm:text-base font-semibold text-neutral-800 dark:text-zinc-300">{cat.label}</h3>
+                    <span className="text-xs font-medium text-neutral-500 dark:text-zinc-500">
                       {isLoading ? "Counting..." : `${bookCount} ${bookCount === 1 ? "Book" : "Books"}`}
                     </span>
                   </div>

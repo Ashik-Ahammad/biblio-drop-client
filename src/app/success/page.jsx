@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { stripe } from "../../lib/stripe";
 import Link from "next/link";
 import { CheckCircle, ArrowRight, BookOpen } from "lucide-react";
+import { createOrder } from "@/lib/actions/orders";
 
 export default async function Success({ searchParams }) {
   const params = await searchParams;
@@ -22,22 +23,19 @@ export default async function Success({ searchParams }) {
     const meta = session.metadata;
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/orders`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: meta.userId,
-          userName: meta.userName,
-          userEmail: meta.userEmail,
-          userRole: meta.userRole,
-          bookId: meta.bookId,
-          bookTitle: meta.bookTitle,
-          deliveryFee: meta.deliveryFee,
-          coverImage: meta.coverImage,
-          sessionId: session.id,
-          author: meta.author,
-          librarianEmail: meta.librarianEmail,
-        }),
+
+      await createOrder({
+        userId: meta.userId,
+        userName: meta.userName,
+        userEmail: meta.userEmail,
+        userRole: meta.userRole,
+        bookId: meta.bookId,
+        bookTitle: meta.bookTitle,
+        deliveryFee: meta.deliveryFee,
+        coverImage: meta.coverImage,
+        sessionId: session.id,
+        author: meta.author,
+        librarianEmail: meta.librarianEmail,
       });
     } catch (err) {
       console.error("Failed to save order to database:", err);
@@ -47,13 +45,12 @@ export default async function Success({ searchParams }) {
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-[#050505] flex items-center justify-center p-4 relative overflow-hidden font-sans transition-colors duration-300">
 
-      {/* Decorative Glow Background for Dark Mode */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-emerald-500/20 blur-[120px] rounded-full pointer-events-none hidden dark:block" />
 
       {/* Main Success Card */}
       <div className="max-w-md w-full bg-white dark:bg-[#0a0a0a] border border-zinc-200 dark:border-white/10 rounded-3xl shadow-2xl p-8 relative z-10 text-center animate-in fade-in zoom-in duration-500">
 
-        {/* Success Icon */}
+        {/* Success  */}
         <div className="w-20 h-20 mx-auto bg-emerald-100 dark:bg-emerald-500/10 rounded-full flex items-center justify-center mb-6 border border-emerald-200 dark:border-emerald-500/20">
           <CheckCircle className="text-emerald-600 dark:text-emerald-400 size-10" />
         </div>
@@ -66,7 +63,7 @@ export default async function Success({ searchParams }) {
           We received your delivery request. The data has been securely saved under your profile, and the book status is now updated to <b className="text-zinc-700 dark:text-zinc-300">Pending Delivery</b>.
         </p>
 
-        {/* Action Links */}
+        {/* Actions */}
         <div className="flex flex-col gap-3">
           {/* Dashboard Link */}
           <Link href="/dashboard/user" className="w-full">

@@ -1,10 +1,28 @@
 "use client";
-import React from "react";
+
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { BookX } from "lucide-react";
+import { Button } from "@heroui/react";
 import BookCard from "@/components/BookCard";
+import { getAllBooks } from "@/lib/api/books";
 
-export default function BrowseBooksClient({ books = [] }) {
+export default function BrowseBooksClient({ initialBooks, initialPagination, user }) {
+  const [books, setBooks] = useState(initialBooks);
+  const [pagination, setPagination] = useState(initialPagination);
+  const [loading, setLoading] = useState(false);
+
+  const loadMore = async () => {
+    setLoading(true);
+
+    const res = await getAllBooks(user?.email || "", user?.role || "", pagination.page + 1, 12);
+    if (res.success) {
+      setBooks((prev) => [...prev, ...res.data]);
+      setPagination(res.pagination);
+    }
+    setLoading(false);
+  };
+
   return (
     <section className="relative min-h-screen py-24 px-4 md:px-8 w-full bg-linear-to-b from-neutral-50 via-white to-neutral-50 dark:from-[#030303] dark:via-[#0A0A0A] dark:to-[#030303] overflow-hidden text-neutral-900 dark:text-white transition-colors duration-300">
 
@@ -32,20 +50,20 @@ export default function BrowseBooksClient({ books = [] }) {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8">
+        {/* Books Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
           {books.length > 0 ? (
             books.map((book, i) => (
               <motion.div
                 key={book._id || i}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.4 }}
+                transition={{ delay: (i % 12) * 0.05, duration: 0.4 }}
               >
                 <BookCard book={book} />
               </motion.div>
             ))
           ) : (
-
             <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
               <div className="bg-neutral-100 dark:bg-white/5 p-6 rounded-full mb-4 transition-colors duration-300">
                 <BookX size={48} className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
@@ -59,6 +77,19 @@ export default function BrowseBooksClient({ books = [] }) {
             </div>
           )}
         </div>
+
+        {/* Load More Btn */}
+        {pagination.page < pagination.totalPages && (
+          <div className="flex justify-center mt-16">
+            <Button
+              isLoading={loading}
+              onPress={loadMore}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 px-10 rounded-2xl transition-colors duration-300"
+            >
+              Load More
+            </Button>
+          </div>
+        )}
 
       </div>
     </section>

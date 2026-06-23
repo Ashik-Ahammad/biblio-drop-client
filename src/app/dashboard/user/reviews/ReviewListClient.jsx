@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Button, Card, Modal } from "@heroui/react";
 import { Star, Edit2, Trash2, BookOpen, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
+import { updateReview, deleteReview } from "@/lib/actions/reviews";
 
 export default function ReviewListClient({ reviews }) {
   const router = useRouter();
@@ -38,51 +39,44 @@ export default function ReviewListClient({ reviews }) {
 
     setIsEditing(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews/${selectedReview._id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rating: editRating, comment: editComment }),
-        },
-      );
-      const data = await res.json();
 
-      if (data.success) {
+      const data = await updateReview(selectedReview._id, {
+        rating: editRating,
+        comment: editComment,
+      });
+
+      if (data?.success) {
         toast.success("Review updated successfully");
         setIsEditOpen(false);
         router.refresh();
       } else {
-        toast.error("Failed to update review");
+        toast.error(data?.message || "Failed to update review");
       }
     } catch (error) {
       toast.error("Internal Server Error");
+    } finally {
+      setIsEditing(false);
     }
-    setIsEditing(false);
   };
 
   const handleDeleteConfirm = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/reviews/${selectedReview._id}`,
-        {
-          method: "DELETE",
-        },
-      );
-      const data = await res.json();
 
-      if (data.success) {
+      const data = await deleteReview(selectedReview._id);
+
+      if (data?.success) {
         toast.success("Review deleted successfully");
         setIsDeleteOpen(false);
         router.refresh();
       } else {
-        toast.error("Failed to delete review");
+        toast.error(data?.message || "Failed to delete review");
       }
     } catch (error) {
       toast.error("Internal Server Error");
+    } finally {
+      setIsDeleting(false);
     }
-    setIsDeleting(false);
   };
 
   return (
@@ -126,7 +120,7 @@ export default function ReviewListClient({ reviews }) {
                 </Button>
               </div>
 
-              {/* Header: Book Info */}
+              {/* Header Book Info */}
               <div className="flex items-center gap-4 mb-5 pb-5 border-b border-white/5 pr-16">
                 {review.bookImage ? (
                   <div className="relative w-12 h-16 rounded-md overflow-hidden bg-neutral-900 shrink-0">
@@ -153,7 +147,7 @@ export default function ReviewListClient({ reviews }) {
                 </div>
               </div>
 
-              {/* Body: Rating and Comment */}
+              {/* Body Rating and Comment */}
               <div className="flex flex-col flex-1">
                 <div className="flex items-center gap-1 mb-3">
                   {[1, 2, 3, 4, 5].map((star) => (
@@ -177,7 +171,7 @@ export default function ReviewListClient({ reviews }) {
         })}
       </div>
 
-      {/* HeroUI v3 Modal: Edit Review */}
+      {/* Edit Review */}
       <Modal isOpen={isEditOpen} onOpenChange={setIsEditOpen}>
         <Modal.Backdrop>
           <Modal.Container placement="auto">

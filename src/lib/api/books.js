@@ -1,70 +1,29 @@
+import { serverFetch } from "../core/server";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-
-export const getAllBooks = async (email = "", role = "") => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/books?email=${email}&role=${role}`, {
-      cache: "no-store",
-    });
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    console.error("Fetch All Books Error:", error);
-    return [];
-  }
+export const getAllBooks = async (email = "", role = "", page = 1, limit = 12) => {
+  return await serverFetch(`/api/books?email=${email}&role=${role}&page=${page}&limit=${limit}`);
 };
 
 export const getFeaturedBooks = async () => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/books/featured`, {
-      cache: "no-store",
-    });
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    console.error("Fetch Featured Books Error:", error);
-    return [];
-  }
+  const data = await serverFetch("/api/books/featured");
+  return data.success ? data.data : [];
 };
 
 export const getBookById = async (id) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/books/${id}`, {
-      cache: "no-store",
-    });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error(`Fetch Book By ID (${id}) Error:`, error);
-    return { success: false };
-  }
+  return await serverFetch(`/api/books/${id}`);
 };
 
 export const getLibrarianBooks = async (email) => {
   if (!email) return [];
-  try {
-    const res = await fetch(`${BASE_URL}/api/books/librarian/${email}`, {
-      cache: "no-store",
-    });
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    console.error("Fetch Librarian Books Error:", error);
-    return [];
-  }
+  const data = await serverFetch(`/api/books/librarian/${email}`);
+  return data.success ? data.data : [];
 };
 
-// Fetch pending books for Admin approval
 export const getPendingBooks = async () => {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-    const res = await fetch(`${baseUrl}/api/books/pending`, {
-      cache: "no-store",
-    });
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch (error) {
-    console.error("Fetch Pending Books Error:", error);
-    return [];
-  }
+  const data = await serverFetch("/api/books/pending");
+  return data.success ? data.data : [];
+};
+
+export const getAllBooksForAdmin = async (page = 1, limit = 12) => {
+  return await serverFetch(`/api/books/admin/all?page=${page}&limit=${limit}`);
 };

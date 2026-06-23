@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Form, Input, TextArea, Button, Select, ListBox } from "@heroui/react";
 import { BookPlus, ImagePlus, UploadCloud, ChevronDown } from "lucide-react";
-import { imageUpload } from "@/lib/api/imgUpload";
+import { imageUpload } from "@/lib/actions/imgUpload";
 import { addBook } from "@/lib/actions/books";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";

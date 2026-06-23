@@ -1,27 +1,15 @@
-import { serverFetch } from "@/lib/core/server";
+import { serverFetch } from "../core/server";
 
-// Check if a book is in the user's wishlist
 export const checkWishlistStatus = async (email, bookId) => {
-  if (!email) return false;
-  try {
-    const data = await serverFetch(`/api/wishlist/check?email=${email}&bookId=${bookId}`, {
-      cache: "no-store"
-    });
-    return data.inWishlist;
-  } catch (error) {
-    return false;
-  }
+  if (!email || !bookId) return false;
+  const data = await serverFetch(
+    `/api/wishlist/check?email=${email}&bookId=${bookId}`,
+  );
+  return data.inWishlist;
 };
 
-// Get wishlist for the user
 export const getUserWishlist = async (email) => {
   if (!email) return [];
-  try {
-    const data = await serverFetch(`/api/wishlist/${email}`, {
-      cache: "no-store"
-    });
-    return data.success ? data.data : [];
-  } catch (error) {
-    return [];
-  }
+  const data = await serverFetch(`/api/wishlist/${email}`);
+  return data.success ? data.data : [];
 };

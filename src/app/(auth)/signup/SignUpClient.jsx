@@ -24,6 +24,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import signupAnimation from "../../../../public/assets/signup.json";
+import { imageUpload } from "@/lib/actions/imgUpload";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -91,11 +92,21 @@ export default function SignUpClient() {
     const toastId = toast.loading("Creating account...");
 
     try {
+      let imageUrl = undefined;
+
+      if (data.image && data.image.length > 0) {
+        toast.loading("Uploading image...", { id: toastId });
+        const file = data.image[0];
+        imageUrl = await imageUpload(file);
+      }
+
+      toast.loading("Setting up your profile...", { id: toastId });
+
       const res = await authClient.signUp.email({
         email: data.email,
         password: data.password,
         name: data.name,
-        image: data.image || undefined,
+        image: imageUrl,
       });
 
       if (res.error) {
@@ -192,9 +203,10 @@ export default function SignUpClient() {
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.4 }}>
               <Field
                 icon={ImageIcon}
-                type="url"
-                placeholder="Profile Image URL (Optional)"
+                type="file"
+                accept="image/*"
                 error={errors.image?.message}
+                className="pt-2.5 file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 dark:file:bg-emerald-500/10 dark:file:text-emerald-400"
                 {...register("image")}
               />
             </motion.div>

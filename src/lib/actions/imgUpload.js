@@ -1,3 +1,5 @@
+"use server";
+
 export const imageUpload = async (imageFile) => {
   if (!imageFile || imageFile.size === 0) return null;
 
@@ -5,6 +7,7 @@ export const imageUpload = async (imageFile) => {
   formData.append("image", imageFile);
 
   try {
+
     const res = await fetch(
       `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`,
       {
