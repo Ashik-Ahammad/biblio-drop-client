@@ -37,7 +37,7 @@ export const metadata = {
     description: "Discover, order, and track your favorite books with BiblioDrop. Fast, reliable delivery at your doorstep.",
   },
 };
-};
+
 
 export default function RootLayout({ children }) {
   return (
