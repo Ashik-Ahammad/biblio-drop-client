@@ -26,11 +26,11 @@ export default function InventoryTable({ books }) {
   const getStatusBadge = (status) => {
     switch (status) {
       case "Published":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+        return "bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20";
       case "Unpublished":
-        return "bg-amber-500/10 text-amber-400 border-amber-500/20";
+        return "bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/20";
       default:
-        return "bg-neutral-500/10 text-neutral-300 border-neutral-500/20";
+        return "bg-neutral-100 dark:bg-neutral-500/10 text-neutral-700 dark:text-neutral-300 border-neutral-200 dark:border-neutral-500/20";
     }
   };
 
@@ -87,37 +87,37 @@ export default function InventoryTable({ books }) {
   };
 
   return (
-    <div className="w-full bg-[#0a0a0a] border border-white/10 rounded-2xl p-4 shadow-2xl">
-      <Table className="dark text-white">
+    <div className="w-full bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 rounded-2xl p-4 shadow-sm dark:shadow-2xl overflow-hidden">
+      <Table className="text-neutral-900 dark:text-white">
         <Table.ScrollContainer>
           <Table.Content aria-label="Inventory Table" className="min-w-200">
-            <Table.Header className="bg-white/5 border-b border-white/10">
-              <Table.Column isRowHeader className="text-neutral-400 font-bold uppercase text-xs py-4">
+            <Table.Header className="bg-neutral-50 dark:bg-white/5 border-b border-neutral-200 dark:border-white/10">
+              <Table.Column isRowHeader className="text-neutral-500 dark:text-neutral-400 font-bold uppercase text-xs py-4">
                 Book
               </Table.Column>
-              <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">
+              <Table.Column className="text-neutral-500 dark:text-neutral-400 font-bold uppercase text-xs py-4">
                 Category
               </Table.Column>
-              <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">
+              <Table.Column className="text-neutral-500 dark:text-neutral-400 font-bold uppercase text-xs py-4">
                 Fee
               </Table.Column>
-              <Table.Column className="text-neutral-400 font-bold uppercase text-xs py-4">
+              <Table.Column className="text-neutral-500 dark:text-neutral-400 font-bold uppercase text-xs py-4">
                 Status
               </Table.Column>
-              <Table.Column className="text-neutral-400 font-bold uppercase text-xs text-right py-4">
+              <Table.Column className="text-neutral-500 dark:text-neutral-400 font-bold uppercase text-xs text-right py-4">
                 Actions
               </Table.Column>
             </Table.Header>
 
             <Table.Body
               items={tableItems}
-              emptyContent={<span className="text-neutral-500 py-10 block text-center">No books found in inventory.</span>}
+              emptyContent={<span className="text-neutral-500 dark:text-neutral-500 py-10 block text-center">No books found in inventory.</span>}
             >
               {(book) => (
-                <Table.Row key={book.id} className="hover:bg-white/2 border-b border-white/5">
+                <Table.Row key={book.id} className="hover:bg-neutral-50 dark:hover:bg-white/5 border-b border-neutral-100 dark:border-white/5">
                   <Table.Cell className="py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-14 relative rounded overflow-hidden bg-neutral-900 border border-white/10 shrink-0">
+                      <div className="w-10 h-14 relative rounded overflow-hidden bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-white/10 shrink-0">
                         <Image
                           src={book?.coverImage || "/assets/logo.png"}
                           alt={book?.title || "Book"}
@@ -125,18 +125,17 @@ export default function InventoryTable({ books }) {
                           className="object-cover"
                         />
                       </div>
-                      <div className="font-bold text-white max-w-50 truncate">
+                      <div className="font-bold text-neutral-900 dark:text-white max-w-50 truncate">
                         {book?.title || "Untitled"}
                       </div>
                     </div>
                   </Table.Cell>
 
-                  <Table.Cell className="text-neutral-400 py-3">
+                  <Table.Cell className="text-neutral-600 dark:text-neutral-400 py-3">
                     {book?.category || "Uncategorized"}
                   </Table.Cell>
 
-                  {/* Added Delivery Fee Cell */}
-                  <Table.Cell className="text-neutral-300 font-bold py-3">
+                  <Table.Cell className="text-neutral-700 dark:text-neutral-300 font-bold py-3">
                     ${Number(book?.deliveryFee || 0).toFixed(2)}
                   </Table.Cell>
 
@@ -151,7 +150,7 @@ export default function InventoryTable({ books }) {
                       <Button
                         size="sm"
                         variant="secondary"
-                        className="bg-white/5 text-white hover:bg-white/10"
+                        className="bg-neutral-100 dark:bg-white/5 text-neutral-700 dark:text-white hover:bg-neutral-200 dark:hover:bg-white/10"
                         isDisabled={book?.status === "Pending Approval"}
                         onPress={() => handleToggleStatus(book)}
                         title={book?.status === "Published" ? "Unpublish" : "Publish"}
@@ -161,7 +160,7 @@ export default function InventoryTable({ books }) {
                       <Button
                         size="sm"
                         variant="secondary"
-                        className="bg-blue-500/10 text-blue-400 hover:bg-blue-500/20"
+                        className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20"
                         onPress={() => {
                           setSelectedBook(book);
                           setIsEditOpen(true);
@@ -172,7 +171,7 @@ export default function InventoryTable({ books }) {
                       <Button
                         size="sm"
                         variant="secondary"
-                        className="bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                        className="bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20"
                         onPress={() => {
                           setBookToDelete(book);
                           setIsDeleteOpen(true);
@@ -189,71 +188,65 @@ export default function InventoryTable({ books }) {
         </Table.ScrollContainer>
       </Table>
 
-      {/* EDIT MODAL */}
       <Modal isOpen={isEditOpen} onOpenChange={setIsEditOpen}>
         <Modal.Backdrop>
           <Modal.Container placement="auto">
-            <Modal.Dialog className="sm:max-w-md bg-[#0a0a0a] border border-white/10 text-white shadow-2xl">
-              <Modal.CloseTrigger className="text-neutral-400 hover:text-white" />
+            <Modal.Dialog className="sm:max-w-md bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white shadow-2xl">
+              <Modal.CloseTrigger className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white" />
               <Modal.Header>
-                <Modal.Heading className="text-xl text-sky-200 font-bold">Edit Book Details</Modal.Heading>
+                <Modal.Heading className="text-xl text-sky-600 dark:text-sky-200 font-bold">Edit Book Details</Modal.Heading>
               </Modal.Header>
               <Modal.Body className="p-6">
-
                 <form key={selectedBook?.id} id="edit-book-form" onSubmit={handleEditSubmit} className="flex flex-col gap-4">
-
-                  {/* Title */}
                   <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-sm font-medium text-neutral-300">Title</label>
+                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Title</label>
                     <input
                       name="title"
                       type="text"
                       defaultValue={selectedBook?.title || ""}
                       required
-                      className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                      className="w-full bg-neutral-50 dark:bg-white/10 border border-neutral-200 dark:border-white/20 rounded-lg p-3 text-neutral-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
 
-                  {/* Category */}
                   <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-sm font-medium text-neutral-300">Category</label>
+                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Category</label>
                     <input
                       name="category"
                       type="text"
                       defaultValue={selectedBook?.category || ""}
                       required
-                      className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                      className="w-full bg-neutral-50 dark:bg-white/10 border border-neutral-200 dark:border-white/20 rounded-lg p-3 text-neutral-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
 
-                  {/* Delivery Fee */}
                   <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-sm font-medium text-neutral-300">Delivery Fee ($)</label>
+                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Delivery Fee ($)</label>
                     <input
                       name="deliveryFee"
                       type="number"
+                      step="0.01"
+                      min="0"
                       defaultValue={selectedBook?.deliveryFee || ""}
                       required
-                      className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                      className="w-full bg-neutral-50 dark:bg-white/10 border border-neutral-200 dark:border-white/20 rounded-lg p-3 text-neutral-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
 
-                  {/* Description */}
                   <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-sm font-medium text-neutral-300">Description</label>
+                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Description</label>
                     <textarea
                       name="description"
                       defaultValue={selectedBook?.description || ""}
                       required
                       rows={4}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 resize-none transition-colors"
+                      className="w-full bg-neutral-50 dark:bg-white/10 border border-neutral-200 dark:border-white/20 rounded-lg p-3 text-neutral-900 dark:text-white focus:outline-none focus:border-emerald-500 resize-none transition-colors"
                     />
                   </div>
-
                 </form>
               </Modal.Body>
-              <Modal.Footer className="border-t border-white/5">
-                <Button variant="secondary" onPress={() => setIsEditOpen(false)} className="bg-white/5 text-white hover:bg-white/20">
+              <Modal.Footer className="border-t border-neutral-200 dark:border-white/5">
+                <Button variant="secondary" onPress={() => setIsEditOpen(false)} className="bg-neutral-100 dark:bg-white/5 text-neutral-700 dark:text-white hover:bg-neutral-200 dark:hover:bg-white/20">
                   Cancel
                 </Button>
                 <Button form="edit-book-form" type="submit" isLoading={isEditing} className="bg-emerald-600 text-white hover:bg-emerald-700">
@@ -265,24 +258,23 @@ export default function InventoryTable({ books }) {
         </Modal.Backdrop>
       </Modal>
 
-      {/* DELETE ALERT DIALOG */}
       <Modal isOpen={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <Modal.Backdrop>
           <Modal.Container placement="auto">
-            <Modal.Dialog className="sm:max-w-md bg-[#0a0a0a] border border-white/10 text-white">
-              <Modal.CloseTrigger className="text-neutral-400 hover:text-white" />
+            <Modal.Dialog className="sm:max-w-md bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 text-neutral-900 dark:text-white shadow-2xl">
+              <Modal.CloseTrigger className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white" />
               <Modal.Header>
-                <Modal.Heading className="text-xl font-bold text-red-500 flex items-center gap-2">
+                <Modal.Heading className="text-xl font-bold text-red-600 dark:text-red-500 flex items-center gap-2">
                   <AlertTriangle size={20} /> Confirm Deletion
                 </Modal.Heading>
               </Modal.Header>
               <Modal.Body className="p-6">
-                <p className="text-neutral-300">
-                  Are you sure you want to delete <span className="font-bold text-white">{bookToDelete?.title || "this book"}</span>? This action cannot be undone.
+                <p className="text-neutral-600 dark:text-neutral-300">
+                  Are you sure you want to delete <span className="font-bold text-neutral-900 dark:text-white">{bookToDelete?.title || "this book"}</span>? This action cannot be undone.
                 </p>
               </Modal.Body>
-              <Modal.Footer className="border-t border-white/5">
-                <Button variant="secondary" onPress={() => setIsDeleteOpen(false)} className="bg-white/10 text-white hover:bg-white/20">
+              <Modal.Footer className="border-t border-neutral-200 dark:border-white/5">
+                <Button variant="secondary" onPress={() => setIsDeleteOpen(false)} className="bg-neutral-100 dark:bg-white/10 text-neutral-700 dark:text-white hover:bg-neutral-200 dark:hover:bg-white/20">
                   Cancel
                 </Button>
                 <Button onPress={handleDeleteConfirm} isLoading={isDeleting} className="bg-red-600 text-white hover:bg-red-700">

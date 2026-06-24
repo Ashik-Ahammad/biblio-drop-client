@@ -40,7 +40,6 @@ export default function AddBookPage() {
     }
   };
 
-  // Form submit handler
   const onSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -49,7 +48,6 @@ export default function AddBookPage() {
     const toastId = toast.loading("Uploading book details...");
 
     try {
-
       if (!currentUser) {
         throw new Error("You must be logged in as a librarian to add books.");
       }
@@ -59,7 +57,6 @@ export default function AddBookPage() {
 
       const imageFile = formData.get("coverImage");
 
-      // Upload image
       let imageUrl = "";
       if (imageFile && imageFile.size > 0) {
         imageUrl = await imageUpload(imageFile);
@@ -67,7 +64,6 @@ export default function AddBookPage() {
 
       if (!imageUrl) throw new Error("Please upload a valid cover image.");
 
-      // Final data
       const bookData = {
         title: data.title,
         author: data.author,
@@ -77,12 +73,10 @@ export default function AddBookPage() {
         coverImage: imageUrl,
         status: "Pending Approval",
         addedAt: new Date().toISOString(),
-
         librarianId: currentUser.id,
         librarianEmail: currentUser.email,
       };
 
-      //
       const res = await addBook(bookData);
 
       if (res.success) {
@@ -102,32 +96,27 @@ export default function AddBookPage() {
 
   return (
     <div className="w-full max-w-5xl mx-auto p-4 lg:p-8">
-
       <div className="mb-10 text-center lg:text-left relative z-10">
-        <h1 className="text-3xl md:text-4xl font-black text-white flex items-center justify-center lg:justify-start gap-4 tracking-tight drop-shadow-md">
+        <h1 className="text-3xl md:text-4xl font-black text-neutral-900 dark:text-white flex items-center justify-center lg:justify-start gap-4 tracking-tight drop-shadow-md">
           <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-            <BookPlus className="text-emerald-400" size={32} strokeWidth={2.5} />
+            <BookPlus className="text-emerald-500 dark:text-emerald-400" size={32} strokeWidth={2.5} />
           </div>
           Add New Book
         </h1>
-        <p className="text-neutral-400 mt-4 text-sm md:text-base max-w-2xl">
+        <p className="text-neutral-600 dark:text-neutral-400 mt-4 text-sm md:text-base max-w-2xl mx-auto lg:mx-0">
           List your inventory for readers. Provide accurate details and a clear cover image. All submissions are reviewed by an admin before publishing.
         </p>
       </div>
 
-      <div className="bg-[#0a0a0a]/80 backdrop-blur-3xl border border-white/5 rounded-[2rem] p-6 lg:p-12 shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
-
+      <div className="bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-3xl border border-neutral-200 dark:border-white/5 rounded-[2rem] p-6 lg:p-12 shadow-xl dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/10 blur-[150px] rounded-full pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-900/10 blur-[120px] rounded-full pointer-events-none" />
 
         <Form className="relative z-10 flex flex-col gap-10 w-full" onSubmit={onSubmit}>
-
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-10 w-full">
-
             <div className="xl:col-span-7 flex flex-col gap-7 w-full">
-
               <div className="flex flex-col gap-2">
-                <label className="text-neutral-300 font-semibold text-sm">
+                <label className="text-neutral-700 dark:text-neutral-300 font-semibold text-sm">
                   Book Title <span className="text-emerald-500">*</span>
                 </label>
                 <Input
@@ -137,14 +126,14 @@ export default function AddBookPage() {
                   placeholder="e.g. The Great Gatsby"
                   variant="bordered"
                   classNames={{
-                    inputWrapper: "!bg-[#121212] border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 h-14 rounded-xl shadow-inner transition-colors",
-                    input: "text-white font-medium placeholder:text-neutral-600",
+                    inputWrapper: "!bg-neutral-50 dark:!bg-[#121212] border-neutral-200 dark:border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 !h-14 !min-h-[56px] rounded-xl shadow-inner transition-colors",
+                    input: "text-neutral-900 dark:text-white font-medium placeholder:text-neutral-400 dark:placeholder:text-neutral-600",
                   }}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-neutral-300 font-semibold text-sm">
+                <label className="text-neutral-700 dark:text-neutral-300 font-semibold text-sm">
                   Author Name <span className="text-emerald-500">*</span>
                 </label>
                 <Input
@@ -154,66 +143,62 @@ export default function AddBookPage() {
                   placeholder="e.g. F. Scott Fitzgerald"
                   variant="bordered"
                   classNames={{
-                    inputWrapper: "!bg-[#121212] border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 h-14 rounded-xl shadow-inner transition-colors",
-                    input: "text-white font-medium placeholder:text-neutral-600",
+                    inputWrapper: "!bg-neutral-50 dark:!bg-[#121212] border-neutral-200 dark:border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 !h-14 !min-h-[56px] rounded-xl shadow-inner transition-colors",
+                    input: "text-neutral-900 dark:text-white font-medium placeholder:text-neutral-400 dark:placeholder:text-neutral-600",
                   }}
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 w-full items-start">
+              <div className="flex flex-col gap-2">
+                <label className="text-neutral-700 dark:text-neutral-300 font-semibold text-sm">
+                  Delivery Fee ($) <span className="text-emerald-500">*</span>
+                </label>
+                <Input
+                  isRequired
+                  name="deliveryFee"
+                  aria-label="Delivery Fee"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  variant="bordered"
+                  startContent={<span className="text-emerald-500 font-bold mr-1">$</span>}
+                  classNames={{
+                    inputWrapper: "!bg-neutral-50 dark:!bg-[#121212] border-neutral-200 dark:border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 !h-14 !min-h-[56px] rounded-xl shadow-inner transition-colors",
+                    input: "text-neutral-900 dark:text-white font-medium placeholder:text-neutral-400 dark:placeholder:text-neutral-600",
+                  }}
+                />
+              </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-neutral-300 font-semibold text-sm">
-                    Category <span className="text-emerald-500">*</span>
-                  </label>
-                  <Select isRequired name="category" aria-label="Category" placeholder="Select a category" className="w-full">
-                    <Select.Trigger className="bg-[#121212] border border-white/10 hover:border-emerald-500/50 focus:border-emerald-500 h-14 rounded-xl px-4 text-white shadow-inner transition-colors flex justify-between items-center w-full">
-                      <Select.Value className="font-medium text-neutral-300" />
-                      <ChevronDown size={18} className="text-neutral-500" />
-                    </Select.Trigger>
-                    <Select.Popover className="bg-[#121212] border border-white/10 rounded-xl shadow-2xl p-1 backdrop-blur-xl">
-                      <ListBox className="max-h-60 overflow-y-auto scrollbar-hide">
-                        {categories.map((cat) => (
-                          <ListBox.Item
-                            key={cat.key}
-                            id={cat.label}
-                            textValue={cat.label}
-                            className="hover:bg-emerald-500/20 text-neutral-300 py-3 px-4 rounded-lg transition-colors cursor-pointer font-medium"
-                          >
-                            {cat.label}
-                          </ListBox.Item>
-                        ))}
-                      </ListBox>
-                    </Select.Popover>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label className="text-neutral-300 font-semibold text-sm">
-                    Delivery Fee ($) <span className="text-emerald-500">*</span>
-                  </label>
-                  <Input
-                    isRequired
-                    name="deliveryFee"
-                    aria-label="Delivery Fee"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0.00"
-                    variant="bordered"
-                    startContent={<span className="text-emerald-500 font-bold mr-1">$</span>}
-                    classNames={{
-                      inputWrapper: "!bg-[#121212] border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 h-14 rounded-xl shadow-inner transition-colors",
-                      input: "text-white font-medium placeholder:text-neutral-600",
-                    }}
-                  />
-                </div>
-
+              <div className="flex flex-col gap-2">
+                <label className="text-neutral-700 dark:text-neutral-300 font-semibold text-sm">
+                  Category <span className="text-emerald-500">*</span>
+                </label>
+                <Select isRequired name="category" aria-label="Category" placeholder="Select a category" className="w-full">
+                  <Select.Trigger className="bg-neutral-50 dark:bg-[#121212] border border-neutral-200 dark:border-white/10 hover:border-emerald-500/50 focus:border-emerald-500 !h-14 !min-h-[56px] rounded-xl px-4 text-neutral-900 dark:text-white shadow-inner transition-colors flex justify-between items-center w-full">
+                    <Select.Value className="font-medium text-neutral-700 dark:text-neutral-300" />
+                    <ChevronDown size={18} className="text-neutral-500" />
+                  </Select.Trigger>
+                  <Select.Popover className="bg-white dark:bg-[#121212] border border-neutral-200 dark:border-white/10 rounded-xl shadow-2xl p-1 backdrop-blur-xl">
+                    <ListBox className="max-h-60 overflow-y-auto scrollbar-hide">
+                      {categories.map((cat) => (
+                        <ListBox.Item
+                          key={cat.key}
+                          id={cat.label}
+                          textValue={cat.label}
+                          className="hover:bg-emerald-50 dark:hover:bg-emerald-500/20 text-neutral-700 dark:text-neutral-300 py-3 px-4 rounded-lg transition-colors cursor-pointer font-medium"
+                        >
+                          {cat.label}
+                        </ListBox.Item>
+                      ))}
+                    </ListBox>
+                  </Select.Popover>
+                </Select>
               </div>
             </div>
 
             <div className="xl:col-span-5 flex flex-col gap-2 w-full h-full">
-              <label className="text-sm font-semibold text-neutral-300">
+              <label className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                 Cover Image <span className="text-emerald-500">*</span>
               </label>
 
@@ -230,8 +215,8 @@ export default function AddBookPage() {
                 <div
                   className={`w-full h-full min-h-[260px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center transition-all duration-400 overflow-hidden ${
                     imagePreview
-                      ? "border-emerald-500/50 bg-emerald-500/5"
-                      : "border-white/10 group-hover:border-emerald-500/50 bg-[#121212]"
+                      ? "border-emerald-500/50 bg-emerald-50/50 dark:bg-emerald-500/5"
+                      : "border-neutral-300 dark:border-white/10 group-hover:border-emerald-500/50 bg-neutral-50 dark:bg-[#121212]"
                   }`}
                 >
                   {imagePreview ? (
@@ -251,11 +236,11 @@ export default function AddBookPage() {
                     </div>
                   ) : (
                     <div className="text-center p-6 flex flex-col items-center gap-4 transition-transform duration-300 group-hover:scale-105">
-                      <div className="w-16 h-16 rounded-full bg-white/3 flex items-center justify-center text-neutral-400 border border-white/5 shadow-inner">
-                        <UploadCloud size={32} className="text-emerald-500/80 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                      <div className="w-16 h-16 rounded-full bg-white dark:bg-white/3 flex items-center justify-center text-neutral-400 border border-neutral-200 dark:border-white/5 shadow-inner">
+                        <UploadCloud size={32} className="text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)] dark:drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                       </div>
                       <div>
-                        <p className="text-base font-bold text-white mb-1">Click or drag image here</p>
+                        <p className="text-base font-bold text-neutral-900 dark:text-white mb-1">Click or drag image here</p>
                         <p className="text-xs text-neutral-500 font-medium">Supports SVG, PNG, JPG or WEBP</p>
                       </div>
                     </div>
@@ -265,10 +250,9 @@ export default function AddBookPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-8 w-full pt-6 border-t border-white/5">
-
+          <div className="flex flex-col gap-8 w-full pt-6 border-t border-neutral-200 dark:border-white/5">
             <div className="flex flex-col gap-2">
-              <label className="text-neutral-300 font-semibold text-sm">
+              <label className="text-neutral-700 dark:text-neutral-300 font-semibold text-sm">
                  Description <span className="text-emerald-500">*</span>
               </label>
               <TextArea
@@ -279,8 +263,8 @@ export default function AddBookPage() {
                 variant="bordered"
                 minRows={5}
                 classNames={{
-                  inputWrapper: "!bg-[#121212] border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 rounded-xl shadow-inner transition-colors py-3",
-                  input: "text-white font-medium placeholder:text-neutral-600 leading-relaxed",
+                  inputWrapper: "!bg-neutral-50 dark:!bg-[#121212] border-neutral-200 dark:border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 rounded-xl shadow-inner transition-colors py-3",
+                  input: "text-neutral-900 dark:text-white font-medium placeholder:text-neutral-400 dark:placeholder:text-neutral-600 leading-relaxed",
                 }}
               />
             </div>

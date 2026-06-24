@@ -82,7 +82,7 @@ export default function SearchBook({ currentFilters = {} }) {
             classNames={{
               base: "h-12",
               inputWrapper: "!h-12 !min-h-[48px] bg-white dark:bg-[#111] border border-neutral-200 dark:border-white/10 hover:border-emerald-500/50 focus-within:!border-emerald-500 focus-within:!bg-white dark:focus-within:!bg-[#161616] focus-within:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all duration-300 rounded-xl shadow-none",
-              input: "placeholder:text-neutral-500 dark:placeholder:text-neutral-300 text-neutral-900 dark:text-white text-[15px]"
+              input: "placeholder:text-white dark:placeholder:text-white text-white dark:text-white text-[15px]"
             }}
           />
         </div>
@@ -95,7 +95,7 @@ export default function SearchBook({ currentFilters = {} }) {
                 setSort(e.target.value);
                 applyFilters({ sort: e.target.value });
               }}
-              className="w-full bg-transparent outline-none text-sm text-neutral-700 dark:text-neutral-300 appearance-none cursor-pointer"
+              className="w-full px-3 bg-transparent outline-none text-sm text-neutral-700 dark:text-neutral-300 appearance-none cursor-pointer"
             >
               <option value="newest" className="dark:bg-[#1a1a1a]">Newest First</option>
               <option value="oldest" className="dark:bg-[#1a1a1a]">Oldest First</option>

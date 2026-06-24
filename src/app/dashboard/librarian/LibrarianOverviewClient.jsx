@@ -17,7 +17,6 @@ import {
 } from "recharts";
 
 export default function LibrarianOverviewClient({ books, orders }) {
-  // Summary Stats
   const stats = useMemo(() => {
     const totalBooks = books.length;
     const totalEarnings = orders.reduce((sum, o) => sum + (Number(o.book?.deliveryFee) || 0), 0);
@@ -28,7 +27,6 @@ export default function LibrarianOverviewClient({ books, orders }) {
     return { totalBooks, totalEarnings, pendingRequests };
   }, [books, orders]);
 
-  // Earnings & Requests Trend
   const monthlyTrendData = useMemo(() => {
     const last6Months = Array.from({ length: 6 }, (_, i) => {
       const d = new Date();
@@ -53,7 +51,6 @@ export default function LibrarianOverviewClient({ books, orders }) {
     });
   }, [orders]);
 
-  // Category Data
   const categoryData = useMemo(() => {
     const counts = books.reduce((acc, b) => {
       const cat = b.category || "Uncategorized";
@@ -64,7 +61,6 @@ export default function LibrarianOverviewClient({ books, orders }) {
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [books]);
 
-  //  Most Requested Books
   const topBooks = useMemo(() => {
     const counts = orders.reduce((acc, o) => {
       const title = o.book?.title || "Unknown Title";
@@ -78,61 +74,52 @@ export default function LibrarianOverviewClient({ books, orders }) {
       .slice(0, 5);
   }, [orders]);
 
-  // Chart Colors
   const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#f43f5e'];
 
   return (
-    <div className="flex flex-col gap-8 relative pb-10">
+    <div className="flex flex-col gap-6 md:gap-8 relative pb-10 w-full overflow-hidden">
+      <div className="hidden sm:block absolute top-[-50px] left-[-50px] w-[300px] h-[300px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute bottom-1/2 right-[-50px] w-[300px] h-[300px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
 
-      <div className="absolute top-[-50px] left-[-50px] w-[300px] h-[300px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-1/2 right-[-50px] w-[300px] h-[300px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-
-        {/* Total Books Card */}
-        <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-3xl flex items-center gap-5 hover:border-purple-500/30 transition-colors shadow-xl group">
-          <div className="w-14 h-14 bg-purple-500/10 rounded-full flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
-            <BookCopy size={24} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 relative z-10">
+        <div className="bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex items-center gap-4 sm:gap-5 hover:border-purple-500/50 dark:hover:border-purple-500/30 transition-colors shadow-sm dark:shadow-xl group">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-purple-100 dark:bg-purple-500/10 rounded-full flex items-center justify-center text-purple-600 dark:text-purple-500 shrink-0 group-hover:scale-110 transition-transform">
+            <BookCopy size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-neutral-400 mb-1">Total Books Listed</p>
-            <p className="text-3xl font-extrabold text-white">{stats.totalBooks}</p>
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1 truncate">Total Books Listed</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">{stats.totalBooks}</p>
           </div>
         </div>
 
-        {/* Total Earnings Card */}
-        <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-3xl flex items-center gap-5 hover:border-emerald-500/30 transition-colors shadow-xl group">
-          <div className="w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
-            <DollarSign size={24} />
+        <div className="bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex items-center gap-4 sm:gap-5 hover:border-emerald-500/50 dark:hover:border-emerald-500/30 transition-colors shadow-sm dark:shadow-xl group">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-emerald-100 dark:bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-500 shrink-0 group-hover:scale-110 transition-transform">
+            <DollarSign size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-neutral-400 mb-1">Total Earnings</p>
-            <p className="text-3xl font-extrabold text-white">${stats.totalEarnings.toFixed(2)}</p>
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1 truncate">Total Earnings</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">${stats.totalEarnings.toFixed(2)}</p>
           </div>
         </div>
 
-        {/* Pending Requests Card */}
-        <div className="bg-[#0a0a0a] border border-white/10 p-6 rounded-3xl flex items-center gap-5 hover:border-amber-500/30 transition-colors shadow-xl group">
-          <div className="w-14 h-14 bg-amber-500/10 rounded-full flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
-            <Clock size={24} />
+        <div className="bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 p-5 sm:p-6 rounded-2xl sm:rounded-3xl flex items-center gap-4 sm:gap-5 hover:border-amber-500/50 dark:hover:border-amber-500/30 transition-colors shadow-sm dark:shadow-xl group sm:col-span-2 md:col-span-1">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-100 dark:bg-amber-500/10 rounded-full flex items-center justify-center text-amber-600 dark:text-amber-500 shrink-0 group-hover:scale-110 transition-transform">
+            <Clock size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-sm font-semibold text-neutral-400 mb-1">Pending Requests</p>
-            <p className="text-3xl font-extrabold text-white">{stats.pendingRequests}</p>
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1 truncate">Pending Requests</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">{stats.pendingRequests}</p>
           </div>
         </div>
       </div>
 
-      {/* MAIN CHARTS SECTION  */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
-
-        {/* Earnings & Requests Trend Area Chart */}
-        <div className="bg-[#0a0a0a] border border-white/10 p-6 md:p-8 rounded-3xl shadow-xl lg:col-span-2">
-          <div className="flex items-center gap-3 mb-8">
-            <TrendingUp className="text-emerald-500" size={24} />
-            <h3 className="text-xl font-bold text-white">Earnings Trend</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 relative z-10 w-full">
+        <div className="bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-sm dark:shadow-xl lg:col-span-2 w-full overflow-hidden">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-6 sm:mb-8">
+            <TrendingUp className="text-emerald-600 dark:text-emerald-500 w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
+            <h3 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white truncate">Earnings Trend</h3>
           </div>
-          <div className="h-[320px] w-full">
+          <div className="h-[250px] sm:h-[320px] w-full -ml-4 sm:ml-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={monthlyTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
@@ -141,11 +128,11 @@ export default function LibrarianOverviewClient({ books, orders }) {
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" className="dark:stroke-[#262626]" vertical={false} />
                 <XAxis dataKey="name" stroke="#737373" fontSize={12} tickLine={false} axisLine={false} dy={10} />
                 <YAxis stroke="#737373" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0a0a0a', borderColor: '#262626', borderRadius: '12px', color: '#fff' }}
+                  contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '12px', color: '#fff' }}
                   itemStyle={{ color: '#10b981', fontWeight: 'bold' }}
                   formatter={(value, name) => [name === 'earnings' ? `$${value.toFixed(2)}` : value, name.charAt(0).toUpperCase() + name.slice(1)]}
                 />
@@ -155,19 +142,18 @@ export default function LibrarianOverviewClient({ books, orders }) {
           </div>
         </div>
 
-        {/* Books by Category Pie Chart */}
-        <div className="bg-[#0a0a0a] border border-white/10 p-6 md:p-8 rounded-3xl shadow-xl flex flex-col items-center">
-          <h3 className="text-xl font-bold text-white mb-6 w-full text-left">Books by Category</h3>
+        <div className="bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-sm dark:shadow-xl flex flex-col items-center w-full">
+          <h3 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white mb-4 sm:mb-6 w-full text-left truncate">Books by Category</h3>
           {categoryData.length > 0 ? (
-            <div className="h-[280px] w-full max-w-[250px]">
+            <div className="h-[300px] sm:h-[350px] w-full max-w-sm mx-auto">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={categoryData}
                     cx="50%"
-                    cy="50%"
-                    innerRadius={65}
-                    outerRadius={95}
+                    cy="45%"
+                    innerRadius={55}
+                    outerRadius={85}
                     paddingAngle={5}
                     dataKey="value"
                     stroke="none"
@@ -177,47 +163,46 @@ export default function LibrarianOverviewClient({ books, orders }) {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0a0a0a', borderColor: '#262626', borderRadius: '12px', color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '12px', color: '#fff' }}
                     itemStyle={{ fontWeight: 'bold' }}
                     formatter={(value) => [value, "Books Listed"]}
                   />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ color: '#a3a3a3', fontSize: '13px', paddingTop: '20px' }} />
+                  <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ color: '#737373', fontSize: '12px', marginTop: '10px' }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-neutral-500">
+            <div className="flex-1 flex items-center justify-center text-sm sm:text-base text-neutral-500 dark:text-neutral-400 text-center">
               No books listed yet.
             </div>
           )}
         </div>
       </div>
 
-      {/* MOST REQUESTED BOOKS LIST  */}
-      <div className="bg-[#0a0a0a] border border-white/10 p-6 md:p-8 rounded-3xl shadow-xl relative z-10">
-        <h3 className="text-xl font-bold text-white mb-6">Most Requested Books</h3>
+      <div className="bg-white dark:bg-[#0a0a0a] border border-neutral-200 dark:border-white/10 p-5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl shadow-sm dark:shadow-xl relative z-10 w-full overflow-hidden">
+        <h3 className="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white mb-4 sm:mb-6 truncate">Most Requested Books</h3>
 
         {topBooks.length === 0 ? (
-          <p className="text-neutral-500 text-center py-6">No requests found yet.</p>
+          <p className="text-neutral-500 dark:text-neutral-400 text-center py-6 text-sm sm:text-base">No requests found yet.</p>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 sm:gap-4 w-full">
             {topBooks.map((book, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
+                className="flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-neutral-50 dark:bg-white/5 border border-neutral-100 dark:border-white/5 hover:bg-neutral-100 dark:hover:bg-white/10 transition-colors w-full overflow-hidden"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                    index === 0 ? 'bg-amber-500/20 text-amber-500' :
-                    index === 1 ? 'bg-neutral-300/20 text-neutral-300' :
-                    index === 2 ? 'bg-amber-700/20 text-amber-600' : 'bg-white/10 text-white'
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shrink-0 ${
+                    index === 0 ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-500' :
+                    index === 1 ? 'bg-neutral-200 dark:bg-neutral-300/20 text-neutral-600 dark:text-neutral-300' :
+                    index === 2 ? 'bg-orange-100 dark:bg-amber-700/20 text-orange-600 dark:text-amber-600' : 'bg-neutral-200 dark:bg-white/10 text-neutral-700 dark:text-white'
                   }`}>
                     {index + 1}
                   </div>
-                  <p className="font-bold text-white line-clamp-1">{book.title}</p>
+                  <p className="font-bold text-neutral-900 dark:text-white truncate text-sm sm:text-base pr-2">{book.title}</p>
                 </div>
-                <div className="text-sm font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20 whitespace-nowrap">
-                  {book.requests} {book.requests === 1 ? 'Request' : 'Requests'}
+                <div className="text-[10px] sm:text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-emerald-200 dark:border-emerald-500/20 whitespace-nowrap shrink-0 ml-2">
+                  {book.requests} {book.requests === 1 ? 'Req' : 'Reqs'}
                 </div>
               </div>
             ))}

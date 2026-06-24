@@ -119,20 +119,20 @@ const NavbarClient = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <ul className="hidden md:flex items-center gap-6 lg:gap-8">
+          <ul className="hidden md:flex items-center gap-4 lg:gap-8">
             {navLinks.map((link) => {
               const isActive = pathName === link.path;
               return (
                 <li key={link.path}>
                   <Link
                     href={link.path}
-                    className={`flex items-center gap-2 font-bold drop-shadow-md transition-colors ${
+                    className={`flex items-center gap-1.5 lg:gap-2 font-bold drop-shadow-md transition-colors text-sm lg:text-base ${
                       isActive
                         ? "text-emerald-600 dark:text-emerald-400"
                         : "text-emerald-900 dark:text-gray-100 hover:text-emerald-600 dark:hover:text-emerald-400"
                     }`}
                   >
-                    {link.icon}
+                    <span className="scale-90">{link.icon}</span>
                     {link.name}
                   </Link>
                 </li>
@@ -140,25 +140,25 @@ const NavbarClient = () => {
             })}
           </ul>
 
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* ModeToggle Component */}
-            <ModeToggle />
+            <ModeToggle/>
 
-            <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               {!user ? (
-                <>
+                <div className="hidden md:flex items-center gap-2">
                   <Link
                     href="/signin"
-                    className="font-bold text-emerald-900 dark:text-gray-100 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors px-4 drop-shadow-md"
+                    className="font-bold text-emerald-900 dark:text-gray-100 hover:text-emerald-600 transition-colors px-2 lg:px-4 drop-shadow-md text-sm"
                   >
                     Sign In
                   </Link>
                   <Link href="/signup">
-                    <Button className="bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-900/20 hover:bg-emerald-500 transition-all rounded-full px-8 py-2 border-none">
+                    <Button className="bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-all rounded-full px-5 lg:px-8 py-2 border-none text-sm">
                       Get Started
                     </Button>
                   </Link>
-                </>
+                </div>
               ) : (
                 <Dropdown>
                   <Dropdown.Trigger className="cursor-pointer rounded-full transition-transform hover:scale-105 drop-shadow-md">
