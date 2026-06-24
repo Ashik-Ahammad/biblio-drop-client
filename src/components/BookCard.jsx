@@ -54,14 +54,15 @@ export default function BookCard({ book }) {
             <span className="text-neutral-900 dark:text-white text-lg sm:text-2xl font-black tracking-tight">{book.deliveryFee}</span>
           </div>
 
+          {/* Restored the previous beautiful hover effect */}
           <Link
             href={`/books/${book._id}`}
-            className="group/btn relative flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 h-7 sm:h-10 bg-emerald-50/50 dark:bg-white/5 text-emerald-700 dark:text-emerald-300 font-bold rounded-lg sm:rounded-xl border border-emerald-200 dark:border-white/10 transition-all duration-300 hover:border-emerald-500 dark:hover:border-emerald-400 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 dark:hover:text-white hover:shadow-lg hover:shadow-emerald-500/20"
+            className="group/btn relative flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 h-7 sm:h-9 bg-transparent text-neutral-700 dark:text-neutral-300 font-semibold rounded-lg sm:rounded-xl border border-neutral-300 dark:border-white/10 transition-all duration-300 hover:border-emerald-500 dark:hover:border-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-transparent hover:shadow-sm dark:hover:shadow-[inset_0_0_15px_rgba(16,185,129,0.1),0_0_15px_rgba(16,185,129,0.2)]"
           >
-            <span className="tracking-wide text-[10px] sm:text-xs transition-transform duration-300 group-hover/btn:-translate-x-1">
+            <span className="tracking-wide text-[10px] sm:text-xs transition-transform duration-300 group-hover/btn:-translate-x-0.5 sm:group-hover/btn:-translate-x-1">
               Details
             </span>
-            <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 transition-all duration-300 group-hover/btn:w-0 group-hover/btn:opacity-0" />
+            <span className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full bg-emerald-500 transition-all duration-300 group-hover/btn:w-2 sm:group-hover/btn:w-3 group-hover/btn:bg-emerald-500 dark:group-hover/btn:bg-emerald-400" />
           </Link>
         </Card.Footer>
       </div>
