@@ -65,10 +65,10 @@ const NavbarClient = () => {
   };
 
   const navLinks = [
-    { name: "Home", path: "/", icon: <Home size={18} /> },
-    { name: "Browse Books", path: "/books", icon: <Library size={18} /> },
-    { name: "How it Works", path: "/about", icon: <Info size={18} /> },
-    { name: "Contact", path: "/contact", icon: <PhoneCall size={18} /> },
+    { name: "Home", path: "/", icon: <Home className="w-4 h-4 lg:w-[18px] lg:h-[18px]" /> },
+    { name: "Browse Books", path: "/books", icon: <Library className="w-4 h-4 lg:w-[18px] lg:h-[18px]" /> },
+    { name: "How it Works", path: "/about", icon: <Info className="w-4 h-4 lg:w-[18px] lg:h-[18px]" /> },
+    { name: "Contact", path: "/contact", icon: <PhoneCall className="w-4 h-4 lg:w-[18px] lg:h-[18px]" /> },
   ];
 
   return (
@@ -95,8 +95,7 @@ const NavbarClient = () => {
         className="fixed top-0 left-0 right-0 z-50 w-full transition-all"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Mobile Menu Toggle Button */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 lg:gap-4">
             <button
               className="md:hidden text-emerald-900 dark:text-gray-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors focus:outline-none drop-shadow-md"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -104,29 +103,27 @@ const NavbarClient = () => {
               {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
 
-            {/* Logo */}
             <Link
               href="/"
-              className="group flex items-center gap-3 transition-transform active:scale-95"
+              className="group flex items-center gap-2 lg:gap-3 transition-transform active:scale-95"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-900/20 transition-transform group-hover:scale-105 group-hover:rotate-3">
-                <BookOpen className="text-white" size={22} />
+              <div className="flex h-8 w-8 lg:h-10 lg:w-10 items-center justify-center rounded-lg lg:rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-900/20 transition-transform group-hover:scale-105 group-hover:rotate-3">
+                <BookOpen className="text-white w-4 h-4 lg:w-[22px] lg:h-[22px]" />
               </div>
-              <p className="font-extrabold text-xl tracking-tight text-emerald-950 dark:text-white drop-shadow-md transition-colors">
+              <p className="font-extrabold text-lg lg:text-xl tracking-tight text-emerald-950 dark:text-white drop-shadow-md transition-colors">
                 Biblio<span className="text-emerald-500">Drop</span>
               </p>
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <ul className="hidden md:flex items-center gap-4 lg:gap-8">
+          <ul className="hidden md:flex items-center gap-3 lg:gap-8">
             {navLinks.map((link) => {
               const isActive = pathName === link.path;
               return (
                 <li key={link.path}>
                   <Link
                     href={link.path}
-                    className={`flex items-center gap-1.5 lg:gap-2 font-bold drop-shadow-md transition-colors text-sm lg:text-base ${
+                    className={`flex items-center gap-1.5 font-bold drop-shadow-md transition-colors text-xs lg:text-base ${
                       isActive
                         ? "text-emerald-600 dark:text-emerald-400"
                         : "text-emerald-900 dark:text-gray-100 hover:text-emerald-600 dark:hover:text-emerald-400"
@@ -140,21 +137,20 @@ const NavbarClient = () => {
             })}
           </ul>
 
-          <div className="flex items-center gap-2 md:gap-4">
-            {/* ModeToggle Component */}
+          <div className="flex items-center gap-2 md:gap-3 lg:gap-4">
             <ModeToggle/>
 
-            <div className="flex items-center gap-2 md:gap-4">
+            <div className="flex items-center gap-2 md:gap-3 lg:gap-4">
               {!user ? (
-                <div className="hidden md:flex items-center gap-2">
+                <div className="hidden md:flex items-center gap-2 lg:gap-2">
                   <Link
                     href="/signin"
-                    className="font-bold text-emerald-900 dark:text-gray-100 hover:text-emerald-600 transition-colors px-2 lg:px-4 drop-shadow-md text-sm"
+                    className="font-bold text-emerald-900 dark:text-gray-100 hover:text-emerald-600 transition-colors px-1.5 lg:px-4 drop-shadow-md text-xs lg:text-sm"
                   >
                     Sign In
                   </Link>
                   <Link href="/signup">
-                    <Button className="bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-all rounded-full px-5 lg:px-8 py-2 border-none text-sm">
+                    <Button className="bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-all rounded-full h-8 lg:h-10 px-4 lg:px-8 min-w-0 text-xs lg:text-sm border-none">
                       Get Started
                     </Button>
                   </Link>
@@ -165,12 +161,12 @@ const NavbarClient = () => {
                     <Avatar
                       size="sm"
                       isBordered
-                      className="ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0a0a0a] ring-emerald-500/50"
+                      className="ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0a0a0a] ring-emerald-500/50 w-7 h-7 lg:w-8 lg:h-8"
                     >
                       <Avatar.Image src={user.image} alt={user.name} />
                       <Avatar.Fallback
                         delayMs={600}
-                        className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-500 font-bold"
+                        className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-500 font-bold text-xs lg:text-sm"
                       >
                         {initials}
                       </Avatar.Fallback>

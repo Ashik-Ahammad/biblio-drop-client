@@ -13,9 +13,30 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Biblio Drop",
+  title: "BiblioDrop | Online Book Delivery & Library Management System",
   description:
-    "Fast, reliable, and seamless online book delivery and management system. Discover, order, and track your favorite books effortlessly with BiblioDrop.",
+    "Experience seamless book delivery with BiblioDrop. Discover a vast library, order your favorite titles, and track deliveries in real-time. Fast, reliable, and user-friendly book management for every reader.",
+    keywords: [
+    "online book delivery",
+    "book management system",
+    "buy books online",
+    "library management",
+    "track book delivery",
+    "BiblioDrop"
+  ],
+  authors: [{ name: "Ashik Ahammad" }],
+  openGraph: {
+    title: "BiblioDrop | Your Ultimate Online Book Delivery Platform",
+    description: "Discover, order, and track your favorite books with BiblioDrop. Fast, reliable delivery at your doorstep.",
+    type: "website",
+    siteName: "BiblioDrop",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BiblioDrop | Online Book Delivery & Library Management System",
+    description: "Discover, order, and track your favorite books with BiblioDrop. Fast, reliable delivery at your doorstep.",
+  },
+};
 };
 
 export default function RootLayout({ children }) {
