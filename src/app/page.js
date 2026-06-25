@@ -4,6 +4,8 @@ import Stats from "@/components/Stats";
 import { getFeaturedBooks } from "@/lib/api/books";
 import PopularCategories from "@/components/PopularCategories";
 import TopLibrarians from "@/components/TopLibrarians";
+import FAQ from "@/components/FAQ";
+import LibrarianCTA from "@/components/LibrarianCTA";
 
 export default async function Home() {
 
@@ -16,6 +18,8 @@ export default async function Home() {
       <PopularCategories></PopularCategories>
       <TopLibrarians></TopLibrarians>
       <Stats></Stats>
+      <FAQ></FAQ>
+      <LibrarianCTA></LibrarianCTA>
     </div>
   );
 }
