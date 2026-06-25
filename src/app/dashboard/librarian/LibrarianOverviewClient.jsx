@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { BookCopy, DollarSign, Clock, TrendingUp } from "lucide-react";
 import {
   AreaChart,
@@ -17,62 +17,74 @@ import {
 } from "recharts";
 
 export default function LibrarianOverviewClient({ books, orders }) {
-  const stats = useMemo(() => {
-    const totalBooks = books.length;
-    const totalEarnings = orders.reduce((sum, o) => sum + (Number(o.book?.deliveryFee) || 0), 0);
-    const pendingRequests = orders.filter((o) =>
-      ["Pending Delivery", "Pending", "Dispatched"].includes(o.status)
-    ).length;
 
-    return { totalBooks, totalEarnings, pendingRequests };
-  }, [books, orders]);
+  // 1. Stats Calculation
+  const totalBooks = books.length;
 
-  const monthlyTrendData = useMemo(() => {
-    const last6Months = Array.from({ length: 6 }, (_, i) => {
-      const d = new Date();
-      d.setMonth(d.getMonth() - i);
-      return {
-        name: d.toLocaleString("default", { month: "short" }),
-        month: d.getMonth(),
-        year: d.getFullYear(),
-      };
-    }).reverse();
+  const pendingRequests = orders.filter((o) =>
+    ["Pending Delivery", "Pending", "Dispatched"].includes(o.status)
+  ).length;
 
-    return last6Months.map((m) => {
-      const monthOrders = orders.filter((o) => {
-        const d = new Date(o.orderedAt);
-        return d.getMonth() === m.month && d.getFullYear() === m.year;
-      });
+  let totalEarnings = 0;
+  orders.forEach((o) => {
+    totalEarnings += Number(o.book?.deliveryFee) || 0;
+  });
 
-      const requests = monthOrders.length;
-      const earnings = monthOrders.reduce((sum, o) => sum + (Number(o.book?.deliveryFee) || 0), 0);
+  // 2. Monthly Trend Data Calculation
+  const last6Months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    return {
+      name: d.toLocaleString("default", { month: "short" }),
+      month: d.getMonth(),
+      year: d.getFullYear(),
+    };
+  }).reverse();
 
-      return { name: m.name, requests, earnings };
+  const monthlyTrendData = last6Months.map((m) => {
+    const monthOrders = orders.filter((o) => {
+      const d = new Date(o.orderedAt);
+      return d.getMonth() === m.month && d.getFullYear() === m.year;
     });
-  }, [orders]);
 
-  const categoryData = useMemo(() => {
-    const counts = books.reduce((acc, b) => {
-      const cat = b.category || "Uncategorized";
-      acc[cat] = (acc[cat] || 0) + 1;
-      return acc;
-    }, {});
+    const requests = monthOrders.length;
 
-    return Object.entries(counts).map(([name, value]) => ({ name, value }));
-  }, [books]);
+    let earnings = 0;
+    monthOrders.forEach((o) => {
+      earnings += Number(o.book?.deliveryFee) || 0;
+    });
 
-  const topBooks = useMemo(() => {
-    const counts = orders.reduce((acc, o) => {
-      const title = o.book?.title || "Unknown Title";
-      acc[title] = (acc[title] || 0) + 1;
-      return acc;
-    }, {});
+    return { name: m.name, requests, earnings };
+  });
 
-    return Object.entries(counts)
-      .map(([title, requests]) => ({ title, requests }))
-      .sort((a, b) => b.requests - a.requests)
-      .slice(0, 5);
-  }, [orders]);
+  // 3. Category Data Calculation
+  const categoryCounts = {};
+  books.forEach((b) => {
+    const cat = b.category || "Uncategorized";
+    if (categoryCounts[cat]) {
+      categoryCounts[cat] += 1;
+    } else {
+      categoryCounts[cat] = 1;
+    }
+  });
+
+  const categoryData = Object.entries(categoryCounts).map(([name, value]) => ({ name, value }));
+
+  // 4. Top Books Calculation
+  const titleCounts = {};
+  orders.forEach((o) => {
+    const title = o.book?.title || "Unknown Title";
+    if (titleCounts[title]) {
+      titleCounts[title] += 1;
+    } else {
+      titleCounts[title] = 1;
+    }
+  });
+
+  const topBooks = Object.entries(titleCounts)
+    .map(([title, requests]) => ({ title, requests }))
+    .sort((a, b) => b.requests - a.requests)
+    .slice(0, 5);
 
   const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#f43f5e'];
 
@@ -88,7 +100,7 @@ export default function LibrarianOverviewClient({ books, orders }) {
           </div>
           <div className="min-w-0">
             <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1 truncate">Total Books Listed</p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">{stats.totalBooks}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">{totalBooks}</p>
           </div>
         </div>
 
@@ -98,7 +110,7 @@ export default function LibrarianOverviewClient({ books, orders }) {
           </div>
           <div className="min-w-0">
             <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1 truncate">Total Earnings</p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">${stats.totalEarnings.toFixed(2)}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">${totalEarnings.toFixed(2)}</p>
           </div>
         </div>
 
@@ -108,7 +120,7 @@ export default function LibrarianOverviewClient({ books, orders }) {
           </div>
           <div className="min-w-0">
             <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1 truncate">Pending Requests</p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">{stats.pendingRequests}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white truncate">{pendingRequests}</p>
           </div>
         </div>
       </div>

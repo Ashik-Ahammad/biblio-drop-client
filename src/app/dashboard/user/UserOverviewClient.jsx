@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { BookOpen, Truck, CircleDollarSign } from "lucide-react";
 import {
   BarChart,
@@ -19,49 +19,54 @@ import {
 } from "recharts";
 
 export default function UserOverviewClient({ orders }) {
-  const stats = useMemo(() => {
-    const booksRead = orders.filter((o) => o.status === "Delivered").length;
-    const pendingDeliveries = orders.filter((o) =>
-      ["Pending Delivery", "Dispatched"].includes(o.status)
-    ).length;
-    const totalSpent = orders.reduce((sum, o) => sum + (Number(o.book?.deliveryFee) || 0), 0);
 
-    return { booksRead, pendingDeliveries, totalSpent };
-  }, [orders]);
+  const booksRead = orders.filter((o) => o.status === "Delivered").length;
+  const pendingDeliveries = orders.filter((o) =>
+    ["Pending Delivery", "Dispatched"].includes(o.status)
+  ).length;
 
-  const monthlyData = useMemo(() => {
-    const last6Months = Array.from({ length: 6 }, (_, i) => {
-      const d = new Date();
-      d.setMonth(d.getMonth() - i);
-      return {
-        name: d.toLocaleString("default", { month: "short" }),
-        month: d.getMonth(),
-        year: d.getFullYear(),
-      };
-    }).reverse();
+  let totalSpent = 0;
+  orders.forEach((o) => {
+    totalSpent += Number(o.book?.deliveryFee) || 0;
+  });
 
-    return last6Months.map((m) => {
-      const monthOrders = orders.filter((o) => {
-        const d = new Date(o.orderedAt);
-        return d.getMonth() === m.month && d.getFullYear() === m.year;
-      });
+  const last6Months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    return {
+      name: d.toLocaleString("default", { month: "short" }),
+      month: d.getMonth(),
+      year: d.getFullYear(),
+    };
+  }).reverse();
 
-      const books = monthOrders.length;
-      const spent = monthOrders.reduce((sum, o) => sum + (Number(o.book?.deliveryFee) || 0), 0);
-
-      return { name: m.name, books, spent };
+  const monthlyData = last6Months.map((m) => {
+    const monthOrders = orders.filter((o) => {
+      const d = new Date(o.orderedAt);
+      return d.getMonth() === m.month && d.getFullYear() === m.year;
     });
-  }, [orders]);
 
-  const categoryData = useMemo(() => {
-    const counts = orders.reduce((acc, o) => {
-      const cat = o.book?.category || "Uncategorized";
-      acc[cat] = (acc[cat] || 0) + 1;
-      return acc;
-    }, {});
+    const books = monthOrders.length;
 
-    return Object.entries(counts).map(([name, value]) => ({ name, value }));
-  }, [orders]);
+    let spent = 0;
+    monthOrders.forEach((o) => {
+      spent += Number(o.book?.deliveryFee) || 0;
+    });
+
+    return { name: m.name, books, spent };
+  });
+
+  const counts = {};
+  orders.forEach((o) => {
+    const cat = o.book?.category || "Uncategorized";
+    if (counts[cat]) {
+      counts[cat] += 1;
+    } else {
+      counts[cat] = 1;
+    }
+  });
+
+  const categoryData = Object.entries(counts).map(([name, value]) => ({ name, value }));
 
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e'];
 
@@ -76,7 +81,7 @@ export default function UserOverviewClient({ orders }) {
           </div>
           <div>
             <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1">Total Books</p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white">{stats.booksRead}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white">{booksRead}</p>
           </div>
         </div>
 
@@ -86,7 +91,7 @@ export default function UserOverviewClient({ orders }) {
           </div>
           <div>
             <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1">Pending Deliveries</p>
-            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white">{stats.pendingDeliveries}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white">{pendingDeliveries}</p>
           </div>
         </div>
 
@@ -97,7 +102,7 @@ export default function UserOverviewClient({ orders }) {
           <div>
             <p className="text-xs sm:text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5 sm:mb-1">Total Spent</p>
             <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 dark:text-white">
-              ${stats.totalSpent.toFixed(2)}
+              ${totalSpent.toFixed(2)}
             </p>
           </div>
         </div>

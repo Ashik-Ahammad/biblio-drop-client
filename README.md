@@ -4,7 +4,6 @@
 
 [![Live Preview](https://img.shields.io/badge/Live_Preview-Visit_Now-000000?style=for-the-badge&logo=vercel)](https://bibliodrop-elibrary.vercel.app/)
 
-[![Live Preview](https://img.shields.io/badge/Live_Preview-Visit_Now-000000?style=for-the-badge&logo=vercel)](https://bibliodrop-elibrary.vercel.app/)
 [![Next.js](https://img.shields.io/badge/Next.js-1666FF?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
