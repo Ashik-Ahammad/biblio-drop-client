@@ -16,7 +16,7 @@ import { getBookReviews, checkReviewEligibility } from "@/lib/api/reviews";
 import { checkWishlistStatus } from "@/lib/api/wishlist";
 import { checkDuplicateOrder } from "@/lib/api/orders";
 import WishlistButton from "@/components/books/WishlistButton";
-import CheckoutButton from "@/components/CheckoutButton";
+import CheckoutButton from "@/components/books/CheckoutButton";
 import LibrarianControls from "@/components/books/LibrarianControls";
 import ReviewSection from "@/components/books/ReviewSection";
 import { getUserSession } from "@/lib/core/session";

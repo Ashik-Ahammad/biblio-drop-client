@@ -16,7 +16,7 @@ export default function LibrarianCTA() {
         className="w-full max-w-4xl"
       >
         <Card
-          className="w-full border-none shadow-xl bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/40 dark:to-[#050505] relative overflow-hidden"
+          className="w-full border-none shadow-xl bg-linear-to-br from-emerald-50 to-white dark:from-emerald-950/40 dark:to-[#050505] relative overflow-hidden"
         >
           {/* Decorative Background Glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>

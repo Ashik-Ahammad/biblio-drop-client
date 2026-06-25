@@ -4,9 +4,11 @@ import React, { useState } from "react";
 import { Button } from "@heroui/react";
 import { toast } from "react-hot-toast";
 import { ShoppingBag, Lock, CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutButton({ book, isAvailable, currentUser, hasAlreadyOrdered }) {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   if (hasAlreadyOrdered) {
     return (
@@ -36,9 +38,14 @@ export default function CheckoutButton({ book, isAvailable, currentUser, hasAlre
     currentUser?.id === book.librarianId ||
     currentUser?.email === book.librarianEmail;
 
-  const isDisabled = !currentUser || isOwner;
+  const isDisabled = isOwner;
 
   const handleCheckout = async () => {
+    if (!currentUser) {
+      router.push("/signin");
+      return;
+    }
+
     setIsLoading(true);
     const toastId = toast.loading("Redirecting to secure checkout...");
 
@@ -78,7 +85,7 @@ export default function CheckoutButton({ book, isAvailable, currentUser, hasAlre
       onClick={handleCheckout}
       isLoading={isLoading}
       isDisabled={isDisabled}
-      className={`flex-1 h-14 text-base font-bold rounded-2xl flex items-center gap-2 transition-all duration-300 ${
+      className={`flex-1 h-14 text-base font-bold rounded-2xl flex items-center justify-center gap-2 transition-all duration-300 ${
         !isDisabled
           ? "bg-neutral-900 dark:bg-white text-white dark:text-black hover:scale-[1.02] hover:shadow-[0_0_20px_-5px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)]"
           : "bg-neutral-100 dark:bg-white/5 text-neutral-400 dark:text-neutral-500"

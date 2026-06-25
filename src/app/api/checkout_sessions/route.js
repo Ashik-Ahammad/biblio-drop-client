@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import { stripe } from '../../../lib/stripe'
+import { stripe } from '@/lib/stripe'
 
 export async function POST(request) {
   try {
@@ -17,11 +17,11 @@ export async function POST(request) {
         {
           price_data: {
             currency: "usd",
+            unit_amount: Math.round(Number(deliveryFee) * 100),
             product_data: {
               name: title,
               images: coverImage ? [coverImage] : [],
-            },
-            unit_amount: Math.round(deliveryFee * 100),
+            }
           },
           quantity: 1,
         },
@@ -29,12 +29,10 @@ export async function POST(request) {
       mode: 'payment',
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/books/${bookId}`,
-
-      // Metadata
       metadata: {
-        bookId: bookId,
+        bookId,
         bookTitle: title,
-        coverImage: coverImage,
+        coverImage,
         deliveryFee: deliveryFee.toString(),
         userId: user?.id || user?._id || "",
         userName: user?.name || "",
@@ -46,8 +44,12 @@ export async function POST(request) {
     });
 
     return NextResponse.json({ success: true, url: session.url })
+
   } catch (err) {
     console.error("Stripe Error:", err);
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 })
+    return NextResponse.json(
+      { error: err.message },
+      { status: err.statusCode || 500 }
+    );
   }
 }

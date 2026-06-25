@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "@heroui/react";
-import BookCard from "@/components/BookCard";
+import BookCard from "@/components/books/BookCard";
 
 export default function FeaturedBooksClient({ books = [] }) {
   return (

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { BookX } from "lucide-react";
 import { Button } from "@heroui/react";
-import BookCard from "@/components/BookCard";
+import BookCard from "@/components/books/BookCard";
 import { getAllBooks } from "@/lib/api/books";
 import SearchBook from "./SearchBook";
 
