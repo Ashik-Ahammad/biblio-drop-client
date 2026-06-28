@@ -6,7 +6,12 @@ import { toast } from "react-hot-toast";
 import { ShoppingBag, Lock, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function CheckoutButton({ book, isAvailable, currentUser, hasAlreadyOrdered }) {
+export default function CheckoutButton({
+  book,
+  isAvailable,
+  currentUser,
+  hasAlreadyOrdered,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -54,13 +59,8 @@ export default function CheckoutButton({ book, isAvailable, currentUser, hasAlre
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bookId: book._id,
-          title: book.title,
-          deliveryFee: book.deliveryFee,
-          coverImage: book.coverImage,
+          bookId: book._id, 
           user: currentUser,
-          author: book.author,
-          librarianEmail: book.librarianEmail
         }),
       });
 

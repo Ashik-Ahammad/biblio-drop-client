@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
+import { getBookById } from '@/lib/api/books'
 
 export async function POST(request) {
   try {
@@ -8,7 +9,18 @@ export async function POST(request) {
     const origin = headersList.get('origin')
 
     const body = await request.json();
-    const { bookId, title, coverImage, deliveryFee, user, author, librarianEmail } = body;
+    const { bookId, user } = body;
+
+    if (!bookId) {
+      return NextResponse.json({ success: false, message: "Book ID is missing" }, { status: 400 });
+    }
+
+    const bookRes = await getBookById(bookId);
+    const realBook = bookRes?.success ? bookRes.data : null;
+
+    if (!realBook) {
+      return NextResponse.json({ success: false, message: "Book not found in database" }, { status: 404 });
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -17,10 +29,12 @@ export async function POST(request) {
         {
           price_data: {
             currency: "usd",
-            unit_amount: Math.round(Number(deliveryFee) * 100),
+
+            unit_amount: Math.round(Number(realBook.deliveryFee) * 100),
             product_data: {
-              name: title,
-              images: coverImage ? [coverImage] : [],
+
+              name: realBook.title,
+              images: realBook.coverImage ? [realBook.coverImage] : [],
             }
           },
           quantity: 1,
@@ -29,17 +43,18 @@ export async function POST(request) {
       mode: 'payment',
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/books/${bookId}`,
+
       metadata: {
-        bookId,
-        bookTitle: title,
-        coverImage,
-        deliveryFee: deliveryFee.toString(),
+        bookId: realBook._id ? realBook._id.toString() : bookId,
+        bookTitle: realBook.title,
+        coverImage: realBook.coverImage || "",
+        deliveryFee: realBook.deliveryFee.toString(),
         userId: user?.id || user?._id || "",
         userName: user?.name || "",
         userEmail: user?.email || "",
         userRole: user?.role || "",
-        author: author || "Unknown Author",
-        librarianEmail: librarianEmail || ""
+        author: realBook.author || "Unknown Author",
+        librarianEmail: realBook.librarianEmail || ""
       }
     });
 

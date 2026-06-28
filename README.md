@@ -124,12 +124,13 @@ npm install
     or
 yarn install
 
-1. Set up Environment Variables:
+3. Set up Environment Variables:
 Create a .env.local file and paste the variables listed above.
 
-1. Run the development server:
+4. Run the development server:
 
 npm run dev
+
 5. Open the app:
 Open http://localhost:3000 in your browser.
 
