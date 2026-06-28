@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { BookX } from "lucide-react";
-import { Button } from "@heroui/react";
+import { Pagination } from "@heroui/react";
 import BookCard from "@/components/books/BookCard";
 import { getAllBooks } from "@/lib/api/books";
 import SearchBook from "./SearchBook";
@@ -13,22 +13,61 @@ export default function BrowseBooksClient({ initialBooks, initialPagination, use
   const [pagination, setPagination] = useState(initialPagination);
   const [loading, setLoading] = useState(false);
 
-  const loadMore = async () => {
+  const itemsPerPage = 12;
+
+  const handlePageChange = async (newPage) => {
     setLoading(true);
     const res = await getAllBooks({
       ...currentFilters,
       email: user?.email || "",
       role: user?.role || "",
-      page: pagination.page + 1,
-      limit: 12
+      page: newPage,
+      limit: itemsPerPage,
     });
 
     if (res.success) {
-      setBooks((prev) => [...prev, ...res.data]);
+      setBooks(res.data);
       setPagination(res.pagination);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
     setLoading(false);
   };
+
+  const getPageNumbers = () => {
+    const pages = [];
+    const totalPages = pagination.totalPages;
+    const page = pagination.page;
+
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+
+      if (page > 3) {
+        pages.push("ellipsis");
+      }
+
+      const start = Math.max(2, page - 1);
+      const end = Math.min(totalPages - 1, page + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (page < totalPages - 2) {
+        pages.push("ellipsis");
+      }
+
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const startItem = (pagination.page - 1) * itemsPerPage + 1;
+  const endItem = Math.min(pagination.page * itemsPerPage, pagination.totalItems || 0);
 
   return (
     <section className="relative min-h-screen py-24 px-4 md:px-8 w-full bg-neutral-50 dark:bg-[#0A0A0A] overflow-hidden text-neutral-900 dark:text-white transition-colors duration-300">
@@ -59,8 +98,7 @@ export default function BrowseBooksClient({ initialBooks, initialPagination, use
           <SearchBook currentFilters={currentFilters} />
         </div>
 
-        {/* Books Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7">
+        <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-7 transition-opacity duration-300 ${loading ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
           {books.length > 0 ? (
             books.map((book, i) => (
               <motion.div
@@ -83,16 +121,57 @@ export default function BrowseBooksClient({ initialBooks, initialPagination, use
           )}
         </div>
 
-        {/* Load More */}
-        {pagination.page < pagination.totalPages && (
-          <div className="flex justify-center mt-16">
-            <Button
-              isLoading={loading}
-              onPress={loadMore}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold h-12 px-10 rounded-2xl"
-            >
-              Load More
-            </Button>
+        {pagination.totalPages > 1 && books.length > 0 && (
+          <div className="flex justify-center mt-16 w-full">
+            <Pagination>
+              <Pagination.Summary className="text-neutral-500 dark:text-neutral-400 font-medium">
+                Showing {startItem}-{endItem} of {pagination.totalItems} results
+              </Pagination.Summary>
+              <Pagination.Content>
+                <Pagination.Item>
+                  <Pagination.Previous
+                    isDisabled={pagination.page === 1 || loading}
+                    onPress={() => handlePageChange(pagination.page - 1)}
+                    className="bg-white dark:bg-white/5 text-neutral-700 dark:text-white border border-neutral-200 dark:border-white/10 hover:bg-neutral-100 dark:hover:bg-white/10"
+                  >
+                    <Pagination.PreviousIcon />
+                    <span className="hidden sm:inline">Previous</span>
+                  </Pagination.Previous>
+                </Pagination.Item>
+
+                {getPageNumbers().map((p, i) =>
+                  p === "ellipsis" ? (
+                    <Pagination.Item key={`ellipsis-${i}`}>
+                      <Pagination.Ellipsis className="text-neutral-500 dark:text-neutral-400" />
+                    </Pagination.Item>
+                  ) : (
+                    <Pagination.Item key={p}>
+                      <Pagination.Link
+                        isActive={p === pagination.page}
+                        onPress={() => handlePageChange(p)}
+                        isDisabled={loading}
+                        className={p === pagination.page
+                          ? "bg-emerald-600 text-white border border-emerald-600"
+                          : "bg-white dark:bg-white/5 text-neutral-700 dark:text-white border border-neutral-200 dark:border-white/10 hover:bg-neutral-100 dark:hover:bg-white/10"}
+                      >
+                        {p}
+                      </Pagination.Link>
+                    </Pagination.Item>
+                  )
+                )}
+
+                <Pagination.Item>
+                  <Pagination.Next
+                    isDisabled={pagination.page === pagination.totalPages || loading}
+                    onPress={() => handlePageChange(pagination.page + 1)}
+                    className="bg-white dark:bg-white/5 text-neutral-700 dark:text-white border border-neutral-200 dark:border-white/10 hover:bg-neutral-100 dark:hover:bg-white/10"
+                  >
+                    <span className="hidden sm:inline">Next</span>
+                    <Pagination.NextIcon />
+                  </Pagination.Next>
+                </Pagination.Item>
+              </Pagination.Content>
+            </Pagination>
           </div>
         )}
       </div>
