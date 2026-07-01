@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import ConditionalFooter from "@/components/ConditionalFooter";
+import ScrollToTop from '@/components/ScrollToTop';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -51,7 +52,9 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <ConditionalNavbar></ConditionalNavbar>
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <ScrollToTop />
+            {children}</main>
           <ConditionalFooter />
           <Toaster position="bottom-right" reverseOrder={false} />
         </ThemeProvider>
