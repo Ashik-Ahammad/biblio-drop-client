@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+}
+
 .swiper-pagination-bullet {
   background-color: #cbd5e1 !important;
   opacity: 0.6 !important;
