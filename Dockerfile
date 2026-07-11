@@ -11,7 +11,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV STRIPE_SECRET_KEY=dummy_build_key
+ENV STRIPE_SECRET_KEY=dummy_key
+ENV BETTER_AUTH_URL=http://localhost:3000
+ENV BETTER_AUTH_SECRET=dummy_secret
 RUN npm run build
 
 FROM base AS runner
