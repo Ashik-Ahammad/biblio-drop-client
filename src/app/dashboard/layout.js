@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from "react";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { getUserSession } from "@/lib/core/session";

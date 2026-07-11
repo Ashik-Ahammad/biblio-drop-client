@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Banner from "@/components/Banner";
 import FeaturedBooks from "@/components/FeaturedBooks";
 import Stats from "@/components/Stats";
