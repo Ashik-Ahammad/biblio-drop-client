@@ -1,5 +1,7 @@
 import { getAllBooks } from "@/lib/api/books";
-import PopularCategoriesClient from "./PopularCategoriesClient";
+import dynamic from 'next/dynamic';
+
+const PopularCategoriesClient = dynamic(() => import('./PopularCategoriesClient'));
 
 export default async function PopularCategories() {
   let books = [];

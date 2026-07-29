@@ -3,9 +3,9 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 export const dynamic = 'force-dynamic';
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "react-hot-toast";
 import ConditionalFooter from "@/components/ConditionalFooter";
 import ScrollToTop from '@/components/ScrollToTop';
 

@@ -1,45 +1,84 @@
-export const dynamic = 'force-dynamic';
-import React from "react";
-import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
-import { getUserSession } from "@/lib/core/session";
-import { LayoutDashboard } from "lucide-react";
+'use client';
 
-export default async function DashboardLayout({ children }) {
-  const currentUser = await getUserSession();
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from '@/lib/auth-client';
+import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
+import { FiLayout } from 'react-icons/fi'; // Used layout icon as requested
+
+export default function DashboardLayout({
+  children,
+}) {
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+  const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
+
+  // Route Protection: Redirect if unauthenticated
+  useEffect(() => {
+    if (!isPending && !session?.user) {
+      router.push('/signin');
+    }
+  }, [session, isPending, router]);
+
+  // Loading State while checking session
+  if (isPending || !session?.user) {
+    return (
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#F8FAFC]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-[#0D9488]/20 border-t-[#0D9488] rounded-full animate-spin" />
+          <p className="text-[#475569] font-bold animate-pulse">Loading Dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const userRole = session.user.role || 'tourist';
 
   return (
-    <div className="flex h-screen bg-neutral-50 dark:bg-[#050505] overflow-hidden relative transition-colors duration-300">
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-400/20 dark:bg-emerald-600/10 blur-[120px] rounded-full pointer-events-none transition-colors duration-300" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-emerald-500/10 dark:bg-emerald-900/10 blur-[100px] rounded-full pointer-events-none transition-colors duration-300" />
+    <div className="min-h-[calc(100vh-80px)] bg-[#F8FAFC] flex relative">
 
-      <DashboardSidebar />
+      {/* Mobile Floating Action Button (FAB) for Sidebar */}
+      <div className="md:hidden fixed bottom-6 right-6 z-50">
+        <Sheet open={isMobileSheetOpen} onOpenChange={setIsMobileSheetOpen}>
+          <SheetTrigger asChild>
+            <button className="w-14 h-14 bg-[#0F172A] text-white rounded-full flex items-center justify-center shadow-2xl shadow-[#0F172A]/30 hover:bg-[#1E293B] active:scale-95 transition-all outline-none border-2 border-white/10">
+              <FiLayout className="text-2xl" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-[280px] bg-[#F8FAFC] border-r-slate-200">
+            {/* Required by Radix for accessibility */}
+            <SheetTitle className="sr-only">Dashboard Navigation Menu</SheetTitle>
 
-      <div className="flex-1 flex flex-col overflow-hidden relative z-10">
-        <header className="h-16 lg:h-20 border-b border-neutral-200 dark:border-white/10 bg-white/60 dark:bg-[#0a0a0a]/60 backdrop-blur-2xl flex items-center justify-between px-6 lg:px-10 sticky top-0 z-30 transition-all duration-300">
-          <h1 className="font-bold text-lg md:text-xl text-neutral-900 dark:text-white tracking-wide flex items-center gap-2 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-            <LayoutDashboard size={24} /> <span className="uppercase"> Dashboard</span>
-          </h1>
-
-          <div className="flex items-center gap-4">
-            {currentUser && (
-              <div className="hidden sm:flex items-center">
-                <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300 bg-neutral-100 dark:bg-white/5 px-4 py-1.5 rounded-l-full border border-neutral-200 dark:border-white/10 border-r-0 transition-colors">
-                  {currentUser.email}
-                </span>
-                <span className="text-sm font-medium text-blue-600 dark:text-blue-400 bg-neutral-100 dark:bg-white/5 px-4 py-1.5 rounded-r-full border uppercase select-none border-neutral-200 dark:border-white/10 border-l-0 transition-colors">
-                  {currentUser.role}
-                </span>
-              </div>
-            )}
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 scrollbar-hide">
-          <div className="mx-auto max-w-7xl w-full">
-            {children}
-          </div>
-        </main>
+            {/* Sidebar Component with auto-close capability */}
+            <DashboardSidebar
+              role={userRole}
+              onLinkClick={() => setIsMobileSheetOpen(false)}
+            />
+          </SheetContent>
+        </Sheet>
       </div>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:block w-72 shrink-0 border-r border-slate-200 bg-[#F8FAFC]/50 py-8 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto">
+        <DashboardSidebar role={userRole} />
+      </aside>
+
+      {/* Main Dashboard Content Area */}
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto w-full pb-24 md:pb-8">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Mobile Header (Optional: Just shows role, no button here) */}
+          <div className="md:hidden flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 rounded-lg bg-[#0D9488]/10 text-[#0D9488] flex items-center justify-center font-bold text-xs uppercase">
+              {userRole.charAt(0)}
+            </div>
+            <span className="font-extrabold text-[#0F172A] capitalize">{userRole} Dashboard</span>
+          </div>
+
+          {children}
+        </div>
+      </main>
+
     </div>
   );
 }

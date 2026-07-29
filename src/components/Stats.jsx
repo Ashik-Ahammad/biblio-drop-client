@@ -1,5 +1,5 @@
-import React from "react";
-import StatsClient from "./StatsClient";
+import dynamic from 'next/dynamic';
+const StatsClient = dynamic(() => import('./StatsClient'));
 import { getPublicStats } from "@/lib/api/stats";
 export default async function Stats() {
   

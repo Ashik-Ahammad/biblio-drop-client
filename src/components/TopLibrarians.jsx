@@ -1,5 +1,5 @@
-import React from "react";
-import TopLibrariansClient from "./TopLibrariansClient";
+import dynamic from 'next/dynamic';
+const TopLibrariansClient = dynamic(() => import('./TopLibrariansClient'));
 import { getAllUsers } from "@/lib/api/users";
 import { getAllOrders } from "@/lib/api/orders";
 

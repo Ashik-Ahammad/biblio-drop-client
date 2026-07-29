@@ -5,8 +5,10 @@ import Stats from "@/components/Stats";
 import { getFeaturedBooks } from "@/lib/api/books";
 import PopularCategories from "@/components/PopularCategories";
 import TopLibrarians from "@/components/TopLibrarians";
-import FAQ from "@/components/FAQ";
-import LibrarianCTA from "@/components/LibrarianCTA";
+import nextDynamic from 'next/dynamic';
+
+const FAQ = nextDynamic(() => import('@/components/FAQ'));
+const LibrarianCTA = nextDynamic(() => import('@/components/LibrarianCTA'));
 
 export default async function Home() {
 
