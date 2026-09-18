@@ -31,7 +31,9 @@ export const getAllBooks = async ({
 
 // Fetch featured books for the home page
 export const getFeaturedBooks = async () => {
-  const data = await serverFetch("/api/books/featured");
+  const data = await serverFetch("/api/books/featured", {
+    next: { revalidate: 3600 }
+  });
   return data.success ? data.data : [];
 };
 

@@ -1,19 +1,16 @@
-import { getAllBooks } from "@/lib/api/books";
+import { getPopularCategories } from "@/lib/api/stats";
 import dynamic from 'next/dynamic';
 
 const PopularCategoriesClient = dynamic(() => import('./PopularCategoriesClient'));
 
 export default async function PopularCategories() {
-  let books = [];
+  let categoryCounts = {};
 
   try {
-    const res = await getAllBooks({ limit: 1000 });
-    if (res && res.data && Array.isArray(res.data)) {
-      books = res.data;
-    }
+    categoryCounts = await getPopularCategories();
   } catch (error) {
-    books = [];
+    console.error("Error fetching popular categories:", error);
   }
 
-  return <PopularCategoriesClient books={books} />;
+  return <PopularCategoriesClient categoryCounts={categoryCounts} />;
 }

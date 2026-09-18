@@ -32,7 +32,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } },
 };
 
-export default function PopularCategoriesClient({ books }) {
+export default function PopularCategoriesClient({ categoryCounts = {} }) {
   return (
     <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto w-full transition-colors duration-300">
       <div className="flex flex-col items-center justify-center text-center mb-16">
@@ -56,12 +56,10 @@ export default function PopularCategoriesClient({ books }) {
       >
         {categories.map((categ) => {
           const Icon = categ.icon;
-          const safeBooks = Array.isArray(books) ? books : [];
-
-          const bookCount = safeBooks.filter((book) => {
-            const dbCat = book.category;
-            return dbCat === categ.key || dbCat === categ.label || (categ.key === "Mystery" && dbCat === "Thriller");
-          }).length;
+          const bookCount = 
+            (categoryCounts[categ.key] || 0) + 
+            (categoryCounts[categ.label] || 0) + 
+            (categ.key === "Mystery" ? (categoryCounts["Thriller"] || 0) : 0);
 
           return (
             <motion.div key={categ.key} variants={itemVariants}>

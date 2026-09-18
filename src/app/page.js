@@ -1,4 +1,5 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
+import { Suspense } from "react";
 import Banner from "@/components/Banner";
 import FeaturedBooks from "@/components/FeaturedBooks";
 import Stats from "@/components/Stats";
@@ -17,10 +18,18 @@ export default async function Home() {
   return (
     <div>
       <Banner></Banner>
-      <FeaturedBooks books={books}></FeaturedBooks>
-      <PopularCategories></PopularCategories>
-      <TopLibrarians></TopLibrarians>
-      <Stats></Stats>
+      <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading Featured Books...</div>}>
+        <FeaturedBooks books={books}></FeaturedBooks>
+      </Suspense>
+      <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading Categories...</div>}>
+        <PopularCategories></PopularCategories>
+      </Suspense>
+      <Suspense fallback={<div className="h-96 flex items-center justify-center">Loading Top Librarians...</div>}>
+        <TopLibrarians></TopLibrarians>
+      </Suspense>
+      <Suspense fallback={<div className="h-48 flex items-center justify-center">Loading Stats...</div>}>
+        <Stats></Stats>
+      </Suspense>
       <FAQ></FAQ>
       <LibrarianCTA></LibrarianCTA>
     </div>
