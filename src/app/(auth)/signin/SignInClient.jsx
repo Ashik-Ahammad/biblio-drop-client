@@ -13,7 +13,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import Lottie from "lottie-react";
+import { Lottie } from "lottie-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -108,7 +108,7 @@ export default function SignInClient() {
       >
         <div className="lg:w-1/2 p-8 hidden sm:flex items-center justify-center bg-neutral-50 dark:bg-black/20 transition-colors duration-300">
           <div className="w-full max-w-sm">
-            <Lottie animationData={signinAnimation} loop={true} />
+            <Lottie src={signinAnimation} autoplay loop={true} />
           </div>
         </div>
 

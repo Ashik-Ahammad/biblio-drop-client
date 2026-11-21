@@ -18,7 +18,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import Lottie from "lottie-react";
+import { Lottie } from "lottie-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -151,7 +151,7 @@ export default function SignUpClient() {
       >
         <div className="lg:w-[45%] p-8 hidden sm:flex items-center justify-center bg-neutral-50 dark:bg-black/20 transition-colors duration-300">
           <div className="w-full max-w-sm">
-            <Lottie animationData={signupAnimation} loop={true} />
+            <Lottie src={signupAnimation} autoplay loop={true} />
           </div>
         </div>
 
